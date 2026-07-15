@@ -112,4 +112,65 @@ L'**order flow imbalance (OFI)**, construit à partir de snapshots haute fréque
 
 ---
 
+# 2. Signaux fondamentaux, macro & sentiment
+
+> **Cycle 2** — 21 sources lues, 83 affirmations extraites, 25 soumises à vérification contradictoire → **23 confirmées, 2 réfutées, 0 non vérifiée**. Rapport brut : `cycles/cycle-02-signaux-fondamentaux-macro-sentiment.md`.
+
+## Résumé exécutif
+
+Les preuves les plus robustes de ce cycle concernent la **dégradation post-publication des anomalies fondamentales** : sur 97 prédicteurs académiques, les rendements chutent de 26 % hors échantillon et de 58 % après publication (McLean & Pontiff, 2016), un phénomène confirmé comme **spécifiquement américain** par une méta-analyse portant sur 241 anomalies et 39 marchés (Jacobs & Müller, 2020). À l'opposé, une étude bayésienne récente (Jensen, Kelly & Pedersen, *Journal of Finance* 2023) nuance la thèse d'une « crise de réplication » : la majorité des 153 facteurs testés se répliquent, fonctionnent hors échantillon sur 93 pays et se regroupent en 13 thèmes économiques cohérents. Parmi les facteurs individuels, le **factor low-volatility/betting-against-beta** dispose d'un support empirique particulièrement solide et multi-actifs (Frazzini & Pedersen, 2014), tandis que des signaux comptables classiques comme les **accruals** (Sloan) montrent une érosion documentée liée à l'arbitrage par les hedge funds, et le **F-Score de Piotroski** s'avère fortement dépendant du régime macroéconomique. Le **PEAD** reste l'une des anomalies les plus anciennes et répliquées (50+ ans, 224 études). Ce cycle n'a en revanche produit **aucune claim vérifiée** sur les spreads de crédit, les indicateurs avancés (ISM/PMI), le sentiment des investisseurs (Baker-Wurgler), le VIX contrarian, les rapports COT, le short interest, ou les données alternatives/NLP.
+
+## 2.1 Le « factor zoo » : robustesse, décroissance et débat sur la crise de réplication
+
+### La décroissance post-publication des anomalies (McLean & Pontiff, 2016) — *Confiance : haute*
+
+Sur 97 variables documentées académiquement comme prédictives des rendements cross-sectionnels d'actions, les rendements de portefeuille sont **26 % plus faibles hors échantillon** et **58 % plus faibles après publication** de l'étude ([McLean & Pontiff 2016, JoF](https://www.fmg.ac.uk/sites/default/files/2020-08/Jeffrey-Pontiff.pdf)). Les auteurs interprètent le déclin hors-échantillon (26 %) comme une **borne supérieure de l'effet de data mining**, et la différence supplémentaire (32 points) comme la part attribuable au **trading informé par la publication académique elle-même**.
+
+La décroissance post-publication est **plus forte pour les prédicteurs ayant les rendements in-sample les plus élevés**, et les rendements résiduels persistent davantage dans les portefeuilles concentrés sur des titres à **forte volatilité idiosyncratique et faible liquidité** — cohérent avec une explication par les limites à l'arbitrage plutôt qu'une disparition pure du mispricing.
+
+### Un phénomène essentiellement américain (Jacobs & Müller, 2020) — *Confiance : haute*
+
+[Jacobs & Müller (2020, JFE)](https://www.sciencedirect.com/science/article/abs/pii/S0304405X19301618) étendent l'analyse à **241 anomalies dans 39 marchés actions** (2M+ observations anomalie-pays-mois). Résultat central : **les États-Unis sont le seul des 39 pays où l'on observe un déclin fiable des rendements long-short post-publication**. Les signaux fondamentaux pourraient donc conserver davantage de pouvoir prédictif hors des États-Unis après publication — un point directement pertinent pour la portée EU/Asie de ce rapport.
+
+### Remise en question de la « crise de réplication » (Jensen, Kelly & Pedersen, 2023) — *Confiance : haute (débat actif)*
+
+[Jensen, Kelly & Pedersen (2023, JoF)](https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.13249) développent un **modèle bayésien de réplication de facteurs**, opposé aux tests fréquentistes de Hou-Xue-Zhang (2020) et Harvey-Liu-Zhu (2016). Sur 153 facteurs : la majorité se répliquent, se regroupent en **13 thèmes économiques** cohérents, et fonctionnent hors échantillon sur 93 pays. Le grand nombre de facteurs observés **renforce (et n'affaiblit pas)** la preuve en faveur de chaque facteur dans ce cadre bayésien. Résultat **sensible aux choix de prior** — à présenter comme une position dans un débat actif, non un consensus.
+
+### Critères pratiques de robustesse (Hsu & Kalesnik, Research Affiliates) — *Confiance : haute*
+
+[Hsu & Kalesnik (2014)](https://researchaffiliates.com/en_us/publications/articles/223_finding_smart_beta_in_the_factor_zoo.html) : **value, low volatility et momentum très significatifs** ; les autres facteurs testés (dont la qualité) insignifiants dans leur cadre — *contesté* par Novy-Marx (2013) et Asness-Frazzini-Pedersen (« Quality Minus Junk »). Cinq critères de robustesse proposés : survie dans le temps, validité hors US, robustesse à la définition, explication économique crédible, **t-stat relevé à 3,5-4,0** (au lieu de 2,0) pour corriger le data-snooping — en écho direct à Harvey-Liu-Zhu.
+
+## 2.2 Low-volatility / Betting-Against-Beta (BAB) — *Confiance : haute*
+
+[Frazzini & Pedersen (2014, JFE)](https://www.sciencedirect.com/science/article/pii/S0304405X13002675) : relation bêta-alpha **négative** (contredit le CAPM), vérifiée sur actions US, **20 marchés internationaux, Treasuries, obligations corporate et futures** — anomalie véritablement multi-actifs. Le facteur BAB (long low-beta levier / short high-beta délevier) a réalisé un **Sharpe de 0,78 sur 1926-mars 2012**, ~2× le facteur value et +40 % vs momentum.
+
+**Réserve** : [Novy-Marx & Velikov (2022, JFE)](https://www.sciencedirect.com/science/article/abs/pii/S0304405X21002051) montrent que ce Sharpe est gonflé par une construction non-standard (pondération quasi-égale, forte exposition micro-cap) — une version implémentable value-weighted tombe à **~0,49**, avec une part du rendement reflétant en réalité une exposition profitability/investment. Ces critiques qualifient l'implémentabilité mais **ne réfutent pas l'anomalie bêta-alpha** elle-même.
+
+## 2.3 Signaux issus des états financiers
+
+### Accruals (Sloan) : un signal en voie de disparition — *Confiance : haute*
+
+[Green, Hand & Soliman (2011, Management Science)](https://pubsonline.informs.org/doi/10.1287/mnsc.1110.1320) : les rendements de la stratégie accruals (Sloan 1996) ont **décru au point de ne plus être significativement positifs** en moyenne sur les marchés US — décroissance liée à l'**augmentation du capital des hedge funds** exploitant l'anomalie, cohérent avec le cadre McLean & Pontiff.
+
+### PEAD (Post-Earnings-Announcement Drift) — *Confiance : haute*
+
+Dérive du cours dans la direction de la surprise de bénéfices, **contraire à l'efficience des marchés** : ajustement lent et prévisible plutôt qu'instantané. Documenté depuis **Ball & Brown (1968)**, revue de littérature synthétisant **224 études** ([Fink 2021](https://www.sciencedirect.com/science/article/pii/S2214635020303750)) — l'une des anomalies les plus répliquées de la littérature. *(Nuance : l'interprétation « mispricing pur, incompatible avec le risque » n'a pas survécu à la vérification — débat risque-vs-mispricing toujours actif.)*
+
+### F-Score de Piotroski : dépendance forte au régime macroéconomique — *Confiance : haute*
+
+[Anderson, Chowdhury & Uddin (2024/2025, Springer)](https://link.springer.com/article/10.1007/s11156-024-01331-y) : le F-Score **ne se comporte pas de façon stable selon les états de l'économie** — en contraction économique, les facteurs macro deviennent **~5× plus déterminants** que les facteurs propres à la firme dans la formation du score. Implication pratique : à interpréter en tenant compte du régime macro, pas comme un filtre stable en toute circonstance.
+
+## 2.4 Signaux macro : courbe des taux — *Confiance : haute (pré-2018), à ne pas extrapoler sans réserve*
+
+[Bauer & Mertens (2018, FRBSF)](https://www.frbsf.org/research-and-insights/publications/economic-letter/2018/03/economic-forecasts-with-yield-curve/) : **chaque récession américaine des 60 dernières années (avant 2018)** a été précédée d'une **inversion de la courbe des taux**, avec une seule fausse alerte (milieu 1960s). Corroboré indépendamment par Chicago Fed, Dallas Fed, Estrella-Mishkin. *(La formulation plus large « prédicteur remarquablement précis » n'a pas survécu à la vérification — seule la description historique précise est retenue ; les inversions 2019 et 2022-23 ne sont pas couvertes par cette source.)*
+
+## 2.5 Limites de ce cycle & gaps
+
+- **Non couverts par des claims vérifiés** (reportés) : **spreads de crédit**, indicateurs avancés (ISM/PMI), inflation/breakevens, **sentiment investisseurs** (Baker-Wurgler, AAII, VIX contrarian, COT, short interest, flux de fonds), **NLP/données alternatives** (Loughran-McDonald, sentiment news/earnings calls, réseaux sociaux, satellite/carte bancaire).
+- **Débat méthodologique non tranché** : bayésien (Jensen-Kelly-Pedersen) vs fréquentiste (McLean-Pontiff, Jacobs-Müller) sur la réalité de la décroissance post-publication.
+- **Géographie** : la décroissance post-publication semble spécifiquement américaine (Jacobs & Müller) — pertinent pour la portée EU/Asie de ce rapport, à investiguer plus avant (cycle 8).
+- **2 claims réfutées** (transparence) : interprétation « PEAD = mispricing pur » (Fink) ; formulation générale « term spread = prédicteur remarquablement précis ».
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_

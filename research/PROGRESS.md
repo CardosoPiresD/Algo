@@ -16,7 +16,7 @@
 | Cycle | Thème | Statut |
 |------:|-------|--------|
 | 1 | Signaux techniques & microstructure | ✅ Fait (2026-07-15 ~01:40 UTC) |
-| 2 | Signaux fondamentaux, macro & sentiment | ⏳ À faire |
+| 2 | Signaux fondamentaux, macro & sentiment | ✅ Fait (2026-07-15 ~11:53-12:07 UTC, retry) |
 | 3 | Stratégies quantitatives & littérature académique | ⏳ À faire |
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⏳ À faire |
 | 5 | Outils, frameworks & GitHub | ⏳ À faire |
@@ -25,6 +25,12 @@
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 2** (thème 2 non couvert intégralement par des claims vérifiés) :
+- [ ] Sentiment & positionnement : Baker-Wurgler, VIX contrarian, AAII/Investors Intelligence, COT, short interest, flux de fonds → aucune claim vérifiée ce cycle.
+- [ ] NLP & données alternatives : Loughran-McDonald, sentiment news/earnings calls, réseaux sociaux, satellite/carte bancaire/web scraping → aucune claim vérifiée ce cycle.
+- [ ] Macro complémentaire : spreads de crédit, ISM/PMI, inflation/breakevens → non couverts.
+- [ ] Géographie de la décroissance post-publication (US vs international, Jacobs & Müller) → à approfondir pour la portée EU/Asie (cycle 8).
 
 **Reliquats du cycle 1** (thème 1 non couvert intégralement par des claims vérifiés) :
 - [ ] Signaux de **volatilité** : VIX/term structure, volatility clustering, régimes de volatilité → à intégrer au cycle 3 (littérature quant) ou via un focus dédié.
@@ -36,6 +42,13 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 2 — 2026-07-15 ~11:53-12:07 UTC — Signaux fondamentaux, macro & sentiment
+- **Volume** : 5 angles, 21 sources, 83 claims extraits, 25 vérifiés → **23 confirmés, 2 réfutés, 0 non vérifié** (103/103 agents, retry après plafond de session).
+- **Ajouts principaux** : (i) décroissance post-publication des anomalies (McLean & Pontiff) confirmée **spécifiquement américaine** (Jacobs & Müller — 38/39 marchés intacts) ; (ii) débat bayésien (Jensen-Kelly-Pedersen) vs fréquentiste sur la « crise de réplication » ; (iii) BAB/low-vol robuste multi-actifs mais Sharpe implémentable ~0,49 (pas 0,78) ; (iv) accruals en voie de disparition, PEAD très robuste (224 études), F-Score dépendant du régime macro ; (v) courbe des taux — historique pré-2018 solide, pas extrapolé.
+- **Incident résolu** : le run initial (~01:55 UTC) avait perdu 25 votes + la synthèse sur plafond de session (`resets 11:50am UTC`) ; boucle mise en pause, cadence passée à ~5h/cycle ; retry lancé à 11:53 UTC (juste après le reset) via `resumeFromRunId` → 100 % de succès, 862k tokens sur le retry (agents déjà réussis servis depuis le cache).
+- **Gaps reportés** : sentiment/positionnement, NLP/données alternatives, spreads de crédit, ISM/PMI (voir Lacunes).
+- **Note** : à la demande de l'utilisateur, le **cycle 3 est lancé immédiatement** après le cycle 2 (test de consommation de tokens sous Sonnet 5, pas d'attente de 5h pour ce cycle précis) — retour à la cadence 5h ensuite si le quota le permet.
 
 ### Cycle 1 — 2026-07-15 ~01:40 UTC — Signaux techniques & microstructure
 - **Volume** : 5 angles de recherche, 22 sources lues, 78 claims extraits, 25 vérifiés (3 votes contradictoires/claim) → **19 confirmés, 2 réfutés, 4 non vérifiés** (~104 agents).
