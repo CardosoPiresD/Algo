@@ -17,7 +17,7 @@
 |------:|-------|--------|
 | 1 | Signaux techniques & microstructure | ✅ Fait (2026-07-15 ~01:40 UTC) |
 | 2 | Signaux fondamentaux, macro & sentiment | ✅ Fait (2026-07-15 ~11:53-12:07 UTC, retry) |
-| 3 | Stratégies quantitatives & littérature académique | ⏳ À faire |
+| 3 | Stratégies quantitatives & littérature académique | ✅ Fait (2026-07-15 ~12:xx-13:xx UTC) |
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⏳ À faire |
 | 5 | Outils, frameworks & GitHub | ⏳ À faire |
 | 6 | Exécution, brokers & infrastructure | ⏳ À faire |
@@ -25,6 +25,13 @@
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 3** (thème 3 non couvert intégralement par des claims vérifiés) :
+- [ ] **Détection de régimes** (HMM, changepoint detection) → toujours pas couvert (déjà en gap depuis cycle 1).
+- [ ] **Indicateurs de volume** (OBV, VWAP, volume profile) → toujours pas couvert (déjà en gap depuis cycle 1).
+- [ ] **Patterns chartistes** — étude fondatrice Lo, Mamaysky & Wang (2000) → toujours pas couvert (déjà en gap depuis cycle 1).
+- [ ] **Walk-forward analysis** & cross-validation en série temporelle (purged/embargoed k-fold, López de Prado) → central pour la méthodologie de backtest, à prioriser.
+- [ ] **Deflated Sharpe ratio** (Bailey & López de Prado 2014) → non couvert.
 
 **Reliquats du cycle 2** (thème 2 non couvert intégralement par des claims vérifiés) :
 - [ ] Sentiment & positionnement : Baker-Wurgler, VIX contrarian, AAII/Investors Intelligence, COT, short interest, flux de fonds → aucune claim vérifiée ce cycle.
@@ -42,6 +49,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 3 — 2026-07-15 ~12:xx-13:xx UTC — Stratégies quantitatives & littérature académique
+- **Volume** : 5 angles, 22 sources, 33 claims extraits, 25 vérifiés → **21 confirmés, 4 réfutés, 0 non vérifié** (104/104 agents, succès en un seul passage — **3,53M tokens**, 854 tool calls, ~58 min, sous Sonnet 5 par défaut).
+- **Ajouts principaux** : (i) pairs trading (distance method) — jusqu'à 11%/an historique mais déclin structurel post-1988 (118→38 pb/mois) ; cointégration ETF récente confirme dépendance à la stabilité du spread ; (ii) market making post-Avellaneda-Stoikov — tractabilité HJB→EDO et extensions multi-actifs pour RL ; (iii) ML/DL (Gu-Kelly-Xiu 2020) — NN/arbres battent nettement le linéaire, Sharpe 2,35 vs 0,89 ; (iv) volatilité — semi-variances bonnes/mauvaises améliorent la prévision VIX ; (v) backtest — Reality Check + SPA combinés (Hsu & Kuan).
+- **Note technique** : script du workflow régénéré sans le correctif de synthèse (JSON schema strict) appliqué au cycle 1 — corrigé préventivement dans le fichier, mais le run en cours a réussi sur l'ancien code avant que la correction ne s'applique (pas de nouvel échec cette fois).
+- **Gaps toujours ouverts** (reportés depuis cycle 1, non comblés) : HMM/régimes, volume (OBV/VWAP), patterns chartistes (Lo-Mamaysky-Wang) — + nouveaux : walk-forward analysis, deflated Sharpe ratio.
 
 ### Cycle 2 — 2026-07-15 ~11:53-12:07 UTC — Signaux fondamentaux, macro & sentiment
 - **Volume** : 5 angles, 21 sources, 83 claims extraits, 25 vérifiés → **23 confirmés, 2 réfutés, 0 non vérifié** (103/103 agents, retry après plafond de session).

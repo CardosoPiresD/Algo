@@ -173,4 +173,65 @@ Dérive du cours dans la direction de la surprise de bénéfices, **contraire à
 
 ---
 
+# 3. Stratégies quantitatives & littérature académique
+
+> **Cycle 3** — 22 sources lues, 33 affirmations extraites, 25 soumises à vérification → **21 confirmées, 4 réfutées, 0 non vérifiée**. Rapport brut : `cycles/cycle-03-strategies-quant-litterature-academique.md`.
+
+## Résumé exécutif
+
+La preuve académique converge sur sept axes robustes : (1) le **pairs trading** par "distance method" (Gatev, Goetzmann & Rouwenhorst 2006, RFS) génère historiquement jusqu'à 11%/an sur 1962-2002, mais les profits bruts déclinent nettement post-1988 (118→38 pb/mois pour le top-20) ; une étude récente par cointégration sur ETF (Chen & Alexiou 2025) confirme la dépendance à la stabilité de la relation de cointégration. (2) Le **market making algorithmique** post-Avellaneda-Stoikov (Guéant-Lehalle-Fernandez-Tapia 2011/2013) rend le problème de cotation optimale tractable (HJB → EDO linéaires), avec extensions multi-actifs (Bergault et al. 2021) réutilisables en RL. (3) Le **ML/DL pour la prédiction de rendements** (Gu, Kelly & Xiu 2020, RFS — étude de référence sur ~30 000 actions US, 1957-2016) montre que les arbres et réseaux de neurones battent nettement les modèles linéaires (Sharpe 2,35 pour NN4 vs 0,89 pour la régression panel). (4) Pour la **volatilité**, la décomposition en semi-variances "bonnes/mauvaises" améliore la prévision du VIX (Qiao, Jiang & Yang 2022). (5) Sur la **méthodologie de backtest**, Hsu & Kuan (2005) combinent Reality Check (White) et test SPA (Hansen) — mais **aucune source vérifiée** n'a traité le deflated Sharpe ratio de Bailey & López de Prado ni le walk-forward analysis.
+
+## 3.1 Statistical arbitrage & pairs trading
+
+### Pairs trading (distance method) — *Confiance : haute*
+
+Gatev, Goetzmann & Rouwenhorst (2006, RFS, ex-NBER WP 7032) : la méthode de distance (appariement par distance euclidienne minimale entre prix normalisés, sans modèle économique explicite) génère un rendement excédentaire annualisé moyen jusqu'à **11% sur 1962-2002** pour des portefeuilles autofinancés, dépassant les coûts de transaction conservateurs. Mécanisme : exploitation de mispricing temporaire entre substituts proches ; une analyse bootstrap montre que cet effet est statistiquement distinct du reversal classique déjà documenté. **Déclin structurel** : les profits bruts chutent nettement post-1988 — le rendement excédentaire de la stratégie "top 20 paires" passe d'environ **118 à 38 points de base/mois**, signe d'arbitrage progressif de l'edge après diffusion publique. Source : [SSRN 141615](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=141615).
+
+### Pairs trading par cointégration sur ETF (2025) — *Confiance : moyenne*
+
+Chen & Alexiou (2025, Journal of Asset Management) testent 30 paires d'ETF sélectionnées par cointégration sur 2000-2024. Abaisser le seuil d'entrée z-score augmente fréquence de trading et Sharpe, mais accroît volatilité et drawdowns. La profitabilité dépend de la **stabilité de la cointégration dans le temps** — quand elle se rompt, la performance se dégrade, imposant une re-sélection adaptative des paires et une gestion du risque rigoureuse. Source : [Springer](https://link.springer.com/article/10.1057/s41260-025-00416-0) (source secondaire — fetch direct 403, triangulé via plusieurs recherches web indépendantes).
+
+## 3.2 Market making algorithmique
+
+### Tractabilité post-Avellaneda-Stoikov — *Confiance : haute*
+
+Guéant, Lehalle & Fernandez-Tapia (2011/2013, Mathematics and Financial Economics, [arXiv:1105.3115](https://arxiv.org/abs/1105.3115)) : généralisation de Ho-Stoll et Avellaneda-Stoikov (2008) — les équations HJB non-linéaires du problème de cotation optimale bid/ask se **réduisent à un système d'EDO linéaires**, rendant le problème tractable (progrès sur les approximations asymptotiques/heuristiques d'origine).
+
+### Extension multi-actifs — *Confiance : haute*
+
+Bergault, Evangelista, Guéant & Vieira (2021, Applied Mathematical Finance, [arXiv:1810.04383](https://arxiv.org/pdf/1810.04383)) : approximations en forme fermée des fonctions de valeur pour de nombreuses extensions multi-actifs du modèle Avellaneda-Stoikov — utilisables comme fonctions d'évaluation heuristiques, valeurs initiales pour du reinforcement learning, ou directement pour construire des stratégies de cotation (formules interprétables pour les quotes optimales bid/ask).
+
+## 3.3 Machine learning & deep learning pour la prédiction de rendements
+
+### L'étude de référence : Gu, Kelly & Xiu (2020, RFS) — *Confiance : haute*
+
+Étude de référence (ex-NBER WP 25398) : **~30 000 actions US, 1957-2016**, split 18/12/30 ans train/validation/test out-of-sample, **13 méthodes ML comparées** (OLS, PLS, PCR, elastic net, GLM, random forest, GBRT, réseaux de neurones 1-5 couches) sur 900+ signaux (94 caractéristiques × 8 variables macro × 74 dummies sectorielles). Résultat central : **arbres de décision et réseaux de neurones surpassent nettement les modèles linéaires** en R² out-of-sample mensuel, grâce à leur capacité à capter des **interactions non-linéaires** entre prédicteurs invisibles aux modèles linéaires.
+
+Gains économiques substantiels : stratégie décile long-short basée sur NN4 → **3,3%/mois (39,0% annualisé, vol. 4,8%/mois), Sharpe annualisé out-of-sample de 2,35** contre seulement 0,89 pour une régression panel de référence ; un market-timer S&P 500 basé sur les prévisions du réseau de neurones voit son Sharpe passer de 0,42 (buy-and-hold) à 0,63. Sources : [RFS](https://academic.oup.com/rfs/article/33/5/2223/5758276), [NBER w25398](https://www.nber.org/papers/w25398).
+
+**Attention** : les valeurs précises de R² de la Table 1 (OLS -4,60%, OLS-3 0,16%, NN4 0,39%) ont été **réfutées** lors de la vérification adversariale (0-3) et ne sont pas retenues telles quelles — seule l'identification méthodologique générale (arbres/NN > linéaire) est confirmée.
+
+## 3.4 Volatilité : semi-variances et prévision du VIX
+
+### Décomposition "bonnes/mauvaises" nouvelles — *Confiance : haute*
+
+Qiao, Jiang & Yang (2022, International Review of Financial Analysis) : décomposer la variance réalisée haute-fréquence en semi-variances haussière ("bonne") et baissière ("mauvaise") capture l'asymétrie de la réponse de volatilité aux chocs positifs vs négatifs. Leur modèle REGARCH-2C (intégrant ces semi-variances) produit des prévisions de **VIX plus précises** qu'un large éventail de modèles concurrents (GARCH, GJR-GARCH, GARCH non-linéaire, Heston-Nandi GARCH, EGARCH, REGARCH standard, GARCH à deux composantes). Source : [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S1057521922001600). *(La formulation « données haute-fréquence nécessaires, pas seulement utiles » a été réfutée — 0-3.)*
+
+## 3.5 Méthodologie de backtest rigoureuse
+
+### Reality Check + test SPA appliqués conjointement — *Confiance : moyenne*
+
+Hsu & Kuan (2005, Journal of Financial Econometrics) appliquent conjointement le **Reality Check de White (1997/2000)** et le **test SPA (Superior Predictive Ability) de Hansen** à un univers de règles de trading technique testées sur quatre indices US (DJIA, S&P 500, NASDAQ Composite, Russell 2000) — une avancée méthodologique par rapport à Sullivan-Timmermann-White (1999, JoF) qui n'utilisait que le Reality Check sur le seul DJIA. Source : [NTU](https://homepage.ntu.edu.tw/~ckuan/pdf/snoop01.pdf). *(Les résultats détaillés par indice — profitabilité sur NASDAQ/Russell 2000 mais pas DJIA/S&P 500 — ne sont pas confirmés, seule l'identification méthodologique générale l'est.)*
+
+**Gap important** : ce cycle n'a produit **aucune claim vérifiée** sur le deflated Sharpe ratio (Bailey & López de Prado), le walk-forward analysis, ou la cross-validation en série temporelle (purged/embargoed k-fold) — malgré leur centralité pour une méthodologie de backtest rigoureuse. À traiter en priorité dans un complément.
+
+## 3.6 Limites de ce cycle & gaps
+
+- **Non couverts par des claims vérifiés** (reportés) : détection de régimes (**HMM, changepoint detection**), indicateurs de **volume** (OBV, VWAP, volume profile), étude fondatrice de **Lo, Mamaysky & Wang (2000)** sur les patterns chartistes, **walk-forward analysis**, **deflated Sharpe ratio** (Bailey & López de Prado), cross-validation en série temporelle.
+- **4 claims réfutés** (transparence) : valeurs précises de R² Table 1 Gu-Kelly-Xiu ; « données HF nécessaires » pour le VIX ; résultats détaillés par indice de Hsu & Kuan ; robustesse du rendement ajusté au risque de Gatev et al. après publication (1-2, donc ne pas affirmer que l'edge ajusté au risque a résisté à la diffusion publique).
+- **Sources non lues directement** : plusieurs 403 Forbidden (SSRN, Springer, NTU) — vérification par triangulation de résumés web indépendants (solide mais moins direct qu'une lecture intégrale).
+- **Sensibilité temporelle** : Gu-Kelly-Xiu couvre 1957-2016 (publication 2018/2020), toujours la référence standard mais ne reflète pas d'éventuelle érosion de l'edge ML post-2016 par arbitrage des praticiens.
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_
