@@ -18,13 +18,22 @@
 | 1 | Signaux techniques & microstructure | ✅ Fait (2026-07-15 ~01:40 UTC) |
 | 2 | Signaux fondamentaux, macro & sentiment | ✅ Fait (2026-07-15 ~11:53-12:07 UTC, retry) |
 | 3 | Stratégies quantitatives & littérature académique | ✅ Fait (2026-07-15 ~12:xx-13:xx UTC) |
-| 4 | Données & flux de marché (APIs, fournisseurs) | ⏳ À faire |
+| 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais très incomplet — complément requis (2026-07-15 ~13:xx UTC) |
 | 5 | Outils, frameworks & GitHub | ⏳ À faire |
 | 6 | Exécution, brokers & infrastructure | ⏳ À faire |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⏳ À faire |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**⚠️ Reliquats MAJEURS du cycle 4** (le brief entier est quasi non couvert — priorité haute pour un complément dédié) :
+- [ ] Fournisseurs de données de marché US : Polygon.io, Alpha Vantage, IEX Cloud, Tiingo, EOD Historical Data, Nasdaq Data Link, Twelve Data, Databento (couverture, latence, coût, niveaux L1/L2/L3/tick).
+- [ ] Acteurs institutionnels : Bloomberg, Refinitiv/LSEG, FactSet.
+- [ ] SEC EDGAR (accès gratuit, API).
+- [ ] Alt-data commerciaux : RavenPack, Thinknum, Quandl alt-data (offre concrète, au-delà de l'étude sociologique confirmée).
+- [ ] Biais de données : survivorship bias, point-in-time vs restated data, look-ahead bias, ajustements corporate actions.
+- [ ] Sources Europe/Asie : Euronext, Xetra, LSE et équivalents fiables.
+- **Cause probable** : 6 angles de recherche pour un brief couvrant ~6 sous-thèmes distincts → dilution ; beaucoup de pages fournisseurs (marketing) ont produit peu de « claims falsifiables » exploitables par le pipeline de vérification.
 
 **Reliquats du cycle 3** (thème 3 non couvert intégralement par des claims vérifiés) :
 - [ ] **Détection de régimes** (HMM, changepoint detection) → toujours pas couvert (déjà en gap depuis cycle 1).
@@ -49,6 +58,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 4 — 2026-07-15 ~13:xx UTC — Données & flux de marché ⚠️ INCOMPLET
+- **Volume** : 6 angles, 29 sources, 8 claims extraits (rendement anormalement bas), 8 vérifiés → **6 confirmés, 2 réfutés** (61/61 agents — nettement moins que les ~103-104 des cycles précédents ; **1,9M tokens**, 371 tool calls, ~24 min).
+- **Ajouts** : SimFin (données fondamentales, confiance moyenne) ; nature qualitative/sociologique de la littérature académique sur les alt-data (Hansen & Borch 2022) — ne prouve PAS statistiquement le pouvoir prédictif des alt-data.
+- **⚠️ Problème identifié** : le brief demandait ~6 sous-thèmes distincts (fournisseurs US, institutionnels, EDGAR, alt-data, biais, EU/Asie) mais seulement 6 angles de recherche ont été alloués → dilution, et beaucoup de sources étaient des pages marketing produisant peu de claims falsifiables. Résultat : **quasi tout le brief reste non couvert**.
+- **Décision à prendre** : lancer un cycle complémentaire ciblé sur les gaps du cycle 4 (probablement en scindant en 2 sous-cycles : fournisseurs+EDGAR d'un côté, biais de données+EU/Asie de l'autre) avant de considérer ce thème comme traité. En attendant, on continue vers le cycle 5 et on revient sur ces gaps.
 
 ### Cycle 3 — 2026-07-15 ~12:xx-13:xx UTC — Stratégies quantitatives & littérature académique
 - **Volume** : 5 angles, 22 sources, 33 claims extraits, 25 vérifiés → **21 confirmés, 4 réfutés, 0 non vérifié** (104/104 agents, succès en un seul passage — **3,53M tokens**, 854 tool calls, ~58 min, sous Sonnet 5 par défaut).

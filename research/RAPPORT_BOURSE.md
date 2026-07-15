@@ -234,4 +234,27 @@ Hsu & Kuan (2005, Journal of Financial Econometrics) appliquent conjointement le
 
 ---
 
+# 4. Données & flux de marché ⚠️ (couverture très partielle — complément nécessaire)
+
+> **Cycle 4** — 29 sources lues, 8 affirmations extraites, 8 vérifiées → **6 confirmées, 2 réfutées**. Rendement anormalement faible (61 agents contre ~103-104 les cycles précédents) : les 6 angles de recherche n'ont produit que très peu d'affirmations vérifiables (beaucoup de pages marketing/documentation produit, peu de « claims falsifiables »). **La quasi-totalité du brief demandé (fournisseurs de données US, acteurs institutionnels, SEC EDGAR, biais de données, sources EU/Asie) n'est PAS couverte** par ce cycle. Rapport brut : `cycles/cycle-04-donnees-flux-marche.md`.
+
+## Ce qui est confirmé
+
+### SimFin — données fondamentales — *Confiance : moyenne*
+Profondeur historique (20+ ans, jusqu'en 2003), processus de contrôle qualité documenté, canaux d'accès multiples (API Python, plugin Excel, bulk download CSV). Sources : [simfin.com](https://www.simfin.com/en/fundamental-data-download/), [data-quality](https://www.simfin.com/data/help/main?topic=data-quality). *(Déclarations auto-rapportées par le fournisseur, non auditées. Deux autres affirmations — couverture ~5000 actions US, cadence de mise à jour 24-48h — ont été réfutées.)*
+
+### Nature de la littérature académique sur les alt-data — *Confiance : haute*
+Hansen & Borch (2022, Big Data & Society, [SAGE](https://journals.sagepub.com/doi/10.1177/20539517211070701)) : étude **qualitative/sociologique** (213 entretiens, 2014-2020), **pas** une démonstration quantitative du pouvoir prédictif des alt-data (satellite, cartes bancaires, sentiment web). Introduit « prospecting » et « assetization » comme concepts de commercialisation des alt-data. **À retenir : cette source documente la pratique du secteur, elle ne prouve statistiquement rien sur l'efficacité des alt-data.**
+
+## ⚠️ Ce qui manque entièrement (à traiter en complément prioritaire)
+
+- **Fournisseurs de données de marché US** : Polygon.io, Alpha Vantage, IEX Cloud, Tiingo, EOD Historical Data, Nasdaq Data Link, Twelve Data, Databento — couverture, latence, coût, niveaux L1/L2/L3/tick.
+- **Acteurs institutionnels** : Bloomberg, Refinitiv/LSEG, FactSet — positionnement, cas d'usage.
+- **SEC EDGAR** : accès gratuit, API, données fondamentales officielles.
+- **Alt-data commerciaux** : RavenPack, Thinknum, Quandl alt-data — offre concrète (au-delà de l'étude sociologique ci-dessus).
+- **Biais de données** : survivorship bias, point-in-time vs restated data, look-ahead bias, ajustements corporate actions (splits/dividendes).
+- **Sources Europe/Asie** : Euronext, Deutsche Börse/Xetra, LSE, et équivalents fiables.
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_
