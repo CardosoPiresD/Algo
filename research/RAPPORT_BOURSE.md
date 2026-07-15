@@ -320,4 +320,29 @@ Open-source (MIT), couvre tout le pipeline quant (données → modèles → back
 
 ---
 
+# 6. Exécution, brokers & infrastructure ⚠️ (couverture inégale)
+
+> **Cycle 6** — 25 sources lues, 21 affirmations extraites, 21 vérifiées → **20 confirmées, 1 réfutée** (fusionnées en 4 findings). Rapport brut : `cycles/cycle-06-execution-brokers-infrastructure.md`. **Aucune preuve n'a survécu** pour Alpaca, les papiers fondateurs classiques (Almgren-Chriss, Kyle 1985, Perold 1988), la latence/colocation, l'architecture logicielle, et paper vs live trading.
+
+## Ce qui est confirmé
+
+### API Interactive Brokers (IBKR) — *Confiance : haute*
+Écosystème complet : **TWS API** (TCP socket, publish/subscribe, Python/Java/C++/C#/VB.NET/DDE, requiert TWS ou IB Gateway actif), **API Web unifiée** en consolidation (OAuth 2.0), **API FIX**, **API Excel** — accès à 100+ marchés depuis un compte unique. Migration partielle vers Google Protocol Buffers depuis v10.35.01. Cible des développeurs expérimentés, contrairement aux API REST plus légères type Alpaca. **Rate limits** : 50 messages/seconde max client→TWS (FIX ~250 msg/s) ; données historiques — pas de requêtes identiques <15s, max 6/2s par contrat, max 60/10min, max 50 requêtes ouvertes simultanées. Sources : [IBKR Campus](https://www.interactivebrokers.com/campus/ibkr-api-page/ibkr-api-home/), [tws-api docs](https://interactivebrokers.github.io/tws-api/).
+
+### API Tradier — rate limits — *Confiance : haute*
+Agrégées par jeton, fenêtres glissantes d'1 minute. Données marché/compte/ordres : **120 req/min en production, 60 en sandbox**. Exécution d'ordres (scope 'trade') : **60 req/min dans les deux environnements**. En-têtes HTTP dédiés pour suivi de quota temps réel. Source : [docs.tradier.com](https://docs.tradier.com/docs/rate-limiting).
+
+### Exécution optimale — Busseti & Lillo (2012) — *Confiance : haute*
+[arXiv:1206.0682](https://arxiv.org/pdf/1206.0682) (JSTAT) : résout analytiquement et calibre sur données réelles le problème d'exécution optimale, dérive une frontière efficiente coûts/risque — extension du cadre coûts/risque type Almgren-Chriss, appuyée sur un modèle d'impact transitoire (Bouchaud et al. 2004) capturant volume **et** décroissance temporelle, contrairement aux modèles d'impact permanent/linéaire simples type Kyle (1985). Avec spread bid-ask intégré, la solution analytique fermée disparaît (résolution numérique requise) mais régularise la stratégie optimale. *(Note : preuve sur un article dérivé, pas les papiers fondateurs eux-mêmes — voir gaps.)*
+
+## ⚠️ Ce qui manque entièrement (à traiter en complément)
+
+- **Alpaca** : documentation API, rate limits, paper trading — zéro claim vérifié malgré demande explicite.
+- **Papiers fondateurs** : Almgren-Chriss (2000/2001), Kyle (1985) lambda, Perold (1988) implementation shortfall — seule une extension dérivée (2012) a été vérifiée, pas les sources primaires.
+- **Latence & colocation** : où ça compte réellement pour un trader individuel/petite structure vs le vrai HFT — non couvert.
+- **Architecture logicielle** : composants standards (data feed, signal generation, OMS, risk management, execution) — non couvert.
+- **Paper trading vs live trading** : écart de performance documenté (slippage réel, latence réelle, psychologie) — non couvert.
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_

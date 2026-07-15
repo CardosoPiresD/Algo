@@ -20,11 +20,18 @@
 | 3 | Stratégies quantitatives & littérature académique | ✅ Fait (2026-07-15 ~12:xx-13:xx UTC) |
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais toujours incomplet après 2 tentatives (2026-07-15 ~13:xx UTC) — diagnostic structurel, voir gaps |
 | 5 | Outils, frameworks & GitHub | ✅ Fait (2026-07-15 ~13:xx-14:xx UTC) |
-| 6 | Exécution, brokers & infrastructure | ⏳ À faire |
+| 6 | Exécution, brokers & infrastructure | ⚠️ Fait mais inégal (2026-07-15 ~14:xx UTC) — voir gaps |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⏳ À faire |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 6** (couverture inégale — 4/6 sous-thèmes non couverts) :
+- [ ] **Alpaca** : API, rate limits, paper trading — zéro claim malgré demande explicite (contraste avec IBKR/Tradier qui ont bien fonctionné).
+- [ ] **Papiers fondateurs** : Almgren-Chriss (2000/2001), Kyle (1985), Perold (1988) — seule une extension dérivée (Busseti & Lillo 2012) a été vérifiée.
+- [ ] **Latence & colocation** : où ça compte réellement pour un petit trader vs le vrai HFT.
+- [ ] **Architecture logicielle** : data feed, signal generation, OMS, risk management, execution.
+- [ ] **Paper trading vs live trading** : écart de performance documenté.
 
 **Reliquats du cycle 5** (outils non couverts par des claims confirmées) :
 - [ ] **backtrader** — chiffres réfutés, statut réel de maintenance inconnu.
@@ -66,6 +73,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 6 — 2026-07-15 ~14:xx UTC — Exécution, brokers & infrastructure ⚠️ INÉGAL
+- **Volume** : 6 angles, 25 sources, 21 claims extraits, 21 vérifiés → **20 confirmés, 1 réfuté** fusionnés en 4 findings (96/96 agents, **3,11M tokens**, 664 tool calls, ~40 min, réussi en un seul passage).
+- **Ajouts principaux** : API IBKR (TWS/Web/FIX/Excel, rate limits précis) ; API Tradier (rate limits par endpoint, en-têtes de quota) ; exécution optimale via Busseti & Lillo (2012) — extension du cadre Almgren-Chriss avec impact transitoire (Bouchaud et al. 2004).
+- **⚠️ Couverture inégale** : Alpaca (malgré demande explicite), papiers fondateurs (Almgren-Chriss, Kyle, Perold — seule une extension a été trouvée), latence/colocation, architecture logicielle, paper vs live trading — **tous à zéro claim vérifié**. Pattern similaire au cycle 4 : bon rendement sur documentation officielle très structurée (IBKR, Tradier) et papiers académiques disponibles, mais rien sur les sujets où les sources pertinentes n'ont apparemment pas été trouvées/extraites par les angles de recherche.
+- **Gaps reportés** : Alpaca, Almgren-Chriss/Kyle/Perold directs, latence, architecture OMS, paper vs live.
 
 ### Cycle 5 — 2026-07-15 ~13:xx-14:xx UTC — Outils, frameworks & bibliothèques open-source
 - **Volume** : 5 angles, 21 sources, 80 claims extraits, 25 vérifiés → **19 confirmés, 6 réfutés, 0 non vérifié** (103/103 agents). Run initial échoué à la synthèse (même bug JSON schema que cycle 1) — retry quasi gratuit (36,8k tokens) grâce au cache ; run initial : **3,23M tokens**, 621 tool calls, ~42 min.
