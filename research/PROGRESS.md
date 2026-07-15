@@ -19,12 +19,20 @@
 | 2 | Signaux fondamentaux, macro & sentiment | ✅ Fait (2026-07-15 ~11:53-12:07 UTC, retry) |
 | 3 | Stratégies quantitatives & littérature académique | ✅ Fait (2026-07-15 ~12:xx-13:xx UTC) |
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais toujours incomplet après 2 tentatives (2026-07-15 ~13:xx UTC) — diagnostic structurel, voir gaps |
-| 5 | Outils, frameworks & GitHub | ⏳ À faire |
+| 5 | Outils, frameworks & GitHub | ✅ Fait (2026-07-15 ~13:xx-14:xx UTC) |
 | 6 | Exécution, brokers & infrastructure | ⏳ À faire |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⏳ À faire |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 5** (outils non couverts par des claims confirmées) :
+- [ ] **backtrader** — chiffres réfutés, statut réel de maintenance inconnu.
+- [ ] **TA-Lib, pandas-ta, tsfresh** (analyse technique/features).
+- [ ] **mlfinlab/Hudson & Thames, PyPortfolioOpt, empyrical**.
+- [ ] **pandas, polars, scikit-learn, PyTorch/TensorFlow** (infra générale).
+- [ ] **awesome-quant** et communautés (r/algotrading, forums Quantopian archivés).
+- [ ] Comparatifs tiers indépendants (QuantStart, Hudson & Thames, Alpha Architect) — aucun n'a produit de claim confirmée ce cycle (source dominante = GitHub uniquement).
 
 **⚠️ Reliquats MAJEURS du cycle 4/4bis** (2 tentatives, diagnostic structurel — voir note ci-dessous) :
 - [ ] Fournisseurs de données de marché US : Polygon.io, Alpha Vantage, IEX Cloud, Tiingo, EOD Historical Data, Nasdaq Data Link, Twelve Data, Databento (couverture, latence, coût, niveaux L1/L2/L3/tick).
@@ -58,6 +66,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 5 — 2026-07-15 ~13:xx-14:xx UTC — Outils, frameworks & bibliothèques open-source
+- **Volume** : 5 angles, 21 sources, 80 claims extraits, 25 vérifiés → **19 confirmés, 6 réfutés, 0 non vérifié** (103/103 agents). Run initial échoué à la synthèse (même bug JSON schema que cycle 1) — retry quasi gratuit (36,8k tokens) grâce au cache ; run initial : **3,23M tokens**, 621 tool calls, ~42 min.
+- **Ajouts principaux** : (i) backtesting — zipline-reloaded et vectorbt bien maintenus, bt en stade alpha, backtrader non confirmable ; (ii) plateformes complètes — QuantConnect/LEAN (C# + API Python) et NautilusTrader (Rust, parité recherche/prod) actifs et populaires, freqtrade confirmé GPL-3.0 avec FreqAI natif ; (iii) Qlib (Microsoft) — pipeline quant complet + agent LLM RD-Agent ; (iv) Riskfolio-Lib (optimisation portefeuille) et QuantStats (métriques performance).
+- **Enseignement méthodologique** : contrairement au cycle 4 (données/fournisseurs), les statistiques GitHub (stars, commits, dates) sont des faits numériques bien vérifiables par le pipeline adversarial — 6 chiffres ont même été explicitement réfutés (mécanisme fonctionnel). Le pipeline fonctionne donc bien sur du factuel vérifiable (académique OU statistiques GitHub précises), mais mal sur du contenu marketing/comparatif qualitatif.
+- **Gaps reportés** : backtrader, TA-Lib/pandas-ta/tsfresh, mlfinlab, PyPortfolioOpt, empyrical, infra générale (pandas/polars/sklearn/PyTorch), awesome-quant/communautés.
 
 ### Cycle 4bis — 2026-07-15 ~13:xx UTC — Données & flux de marché (complément ciblé, toujours partiel)
 - **Volume** : 5 angles précisément ciblés (fournisseurs US, institutionnels, EDGAR, biais, EU/Asie), 24 sources, 5 claims extraits, 5 vérifiés → **4 confirmés (0 réfuté), tous unanimes** (46/46 agents, **1,4M tokens**, 266 tool calls, ~16 min).

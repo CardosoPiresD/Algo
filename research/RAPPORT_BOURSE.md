@@ -264,4 +264,60 @@ Hansen & Borch (2022, Big Data & Society, [SAGE](https://journals.sagepub.com/do
 
 ---
 
+# 5. Outils, frameworks & bibliothèques open-source
+
+> **Cycle 5** — 21 sources lues, 80 affirmations extraites, 25 soumises à vérification → **19 confirmées, 6 réfutées, 0 non vérifiée**. Rapport brut : `cycles/cycle-05-outils-frameworks-github.md`. **Attention** : toutes les métriques GitHub (stars, forks, commits) sont un instantané au 15 juillet 2026 — à re-vérifier pour tout usage différé.
+
+## Résumé exécutif
+
+L'écosystème open-source du trading algorithmique et de la recherche quantitative en Python est mature mais hétérogène en termes de maintenance réelle. Parmi les frameworks de backtesting, **zipline-reloaded** (fork communautaire post-Quantopian) et **vectorbt** (avec sa déclinaison commerciale PRO) sont activement maintenus, tandis que **bt** reste explicitement qualifié de stade « alpha » par son propre auteur ; **backtrader** n'a pas pu être confirmé comme actif (métriques réfutées). Côté plateformes complètes, **QuantConnect/LEAN** (moteur C# avec API Python) et **NautilusTrader** (moteur natif Rust, parité recherche-production) se distinguent par une popularité GitHub élevée et un développement soutenu ; **freqtrade** confirme sa nature GPL-3.0 et son module ML FreqAI, mais ses chiffres de popularité n'ont pas résisté à la vérification. Pour la recherche ML, **Qlib** (Microsoft) se démarque par la richesse de son pipeline (RL, agent LLM RD-Agent). **Riskfolio-Lib** et **QuantStats** couvrent respectivement l'optimisation de portefeuille et l'analyse de performance.
+
+## 5.1 Frameworks de backtesting Python
+
+### Zipline-reloaded — successeur maintenu de Quantopian zipline — *Confiance : haute*
+Fork communautaire maintenu par Stefan Jansen depuis la fermeture de Quantopian (fin 2020). **1,8k stars**, **6 694 commits**, commits récents (13 nov. 2025), plusieurs contributeurs actifs. Utilisé comme socle pédagogique dans *Machine Learning for Algorithmic Trading* (Stefan Jansen). Source : [github.com/stefan-jansen/zipline-reloaded](https://github.com/stefan-jansen/zipline-reloaded). *(La date de release v3.1.1 annoncée a été réfutée.)*
+
+### vectorbt / VectorBT PRO — backtesting vectorisé haute performance — *Confiance : haute*
+`polakowo/vectorbt` : **~8 300 stars, 1 100 forks, 121 issues ouvertes**. Développement actif — release v1.1.0 le 5 juillet 2026 (support Python 3.14/pandas 3, moteur Rust optionnel), **1 077 commits**, commit observé le 14 juillet 2026. **Point clé** : la version OSS est l'édition communautaire gratuite d'un produit commercial distinct (**VectorBT PRO**) — les nouvelles fonctionnalités majeures sont désormais orientées vers la version PRO. Sources : [github.com/polakowo/vectorbt](https://github.com/polakowo/vectorbt).
+
+### Backtesting.py — API simple, exécution rapide — *Confiance : haute (description) / chiffres non confirmés*
+API simple, optimiseur intégré, bibliothèque de stratégies composables, fonctionne avec tout instrument à données candlestick. Source : [github.com/kernc/backtesting.py](https://github.com/kernc/backtesting.py). *(Chiffres 8,7k stars/1,5k forks/434 commits non confirmés — 1-2.)*
+
+### bt — framework arborescent construit sur ffn — *Confiance : haute*
+Architecture arborescente, piles d'algorithmes modulaires (Algos/AlgoStacks), construit sur `ffn`. **656 commits, 11 releases** (v1.2.0, 25 avril 2026), activité réelle confirmée — mais **toujours qualifié « alpha stage »** par son propre README, signal de prudence pour la production. Source : [github.com/pmorissette/bt](https://github.com/pmorissette/bt).
+
+## 5.2 Plateformes de recherche/trading complètes
+
+### QuantConnect / LEAN — moteur event-driven C# avec API Python — *Confiance : haute*
+**20,5k stars, 5k forks**, croissance organique constatée. **94,2% C# / 5,6% Python** — le moteur sous-jacent est en C#, l'API utilisateur en Python via interopérabilité Python.Net. Point important pour évaluer performance/maintenabilité pour un utilisateur Python pur. Source : [github.com/QuantConnect/Lean](https://github.com/QuantConnect/Lean).
+
+### NautilusTrader — moteur natif Rust, parité recherche/production — *Confiance : haute*
+Event-driven déterministe, **même code entre backtesting et trading live** (« research-to-production parity »), plan de contrôle Python pour la stratégie/config. **24,7k stars, 3,2k forks, 78 issues ouvertes**, cadence très soutenue (~30 commits/3 jours fin juin 2026, release 1.230.0 le 29 juin 2026). Réserves d'adoption : changements cassants, complexité build Rust/Cython, licence LGPL-3.0, compétences Rust/Python requises. Source : [github.com/nautechsystems/nautilus_trader](https://github.com/nautechsystems/nautilus_trader).
+
+### Freqtrade — bot crypto open-source, module ML natif (FreqAI) — *Confiance : haute (nature/licence) / popularité non confirmée*
+Gratuit, open-source, Python, **GPL-3.0**. FreqAI (ML adaptatif natif), backtesting intégré, hyperopt — les trois confirmés natifs (non add-ons), FreqAI documenté via article JOSS peer-reviewed. Source : [github.com/freqtrade/freqtrade](https://github.com/freqtrade/freqtrade). *(52,3k stars/10,9k forks non confirmés — 0-3.)*
+
+## 5.3 Bibliothèques ML/quant spécialisées
+
+### Qlib (Microsoft) — plateforme d'investissement quant orientée IA — *Confiance : haute*
+Open-source (MIT), couvre tout le pipeline quant (données → modèles → backtesting → alpha → risque → portefeuille → exécution). **46,3k stars, 2 065 commits**, release v0.9.7 (août 2025). Supporte apprentissage supervisé, dynamique de marché, **RL**. Intègre **RD-Agent** — agents autonomes LLM pour automatiser la recherche de facteurs (papier arXiv dédié « R&D-Agent-Quant »). Sources : [github.com/microsoft/qlib](https://github.com/microsoft/qlib), [RD-Agent](https://github.com/microsoft/RD-Agent). *(Réserves d'usage rapportées : pas « production-ready » pour trading live selon certains retours, courbe d'apprentissage élevée.)*
+
+### Riskfolio-Lib — optimisation de portefeuille avancée — *Confiance : haute*
+**4,4k stars, 685 forks** (à comparer, non vérifié, aux ~5,3k de PyPortfolioOpt). **26+ mesures de risque convexes** (dispersion/downside/drawdown), clustering hiérarchique (HRP/HERC), Nested Clustered Optimization, Black-Litterman (variantes bayésienne/augmentée). Construit sur **CVXPY**, intégration Pandas, Python 3.10+. Sources : [github.com/dcajasn/Riskfolio-Lib](https://github.com/dcajasn/Riskfolio-Lib).
+
+## 5.4 Métriques de performance
+
+### QuantStats — analyse de performance en trois modules — *Confiance : haute*
+`quantstats.stats` (Sharpe, volatilité, win rate), `quantstats.plots` (drawdowns, stats glissantes), `quantstats.reports` (tearsheets HTML). Architecture modulaire fréquemment citée dans les comparatifs quant. Source : [github.com/ranaroussi/quantstats](https://github.com/ranaroussi/quantstats). *(Chiffres 7,4k stars/1,2k forks/v0.0.81 non confirmés — 1-2.)*
+
+## 5.5 Limites de ce cycle & gaps
+
+- **Non couverts par des claims confirmées** (malgré demande explicite) : **backtrader** (chiffres réfutés — statut réel inconnu), **TA-Lib, pandas-ta, tsfresh** (analyse technique/features), **mlfinlab/Hudson & Thames, PyPortfolioOpt, empyrical**, **pandas, polars, scikit-learn, PyTorch/TensorFlow**, **awesome-quant** et communautés (r/algotrading, forums Quantopian archivés). L'absence de claim confirmée ne signifie pas que ces outils sont moins pertinents — c'est une limite du processus de vérification ce cycle.
+- **Sensibilité temporelle forte** : quasi toutes les métriques (stars, forks, commits, releases) sont des instantanés au 15 juillet 2026, à re-vérifier pour tout usage différé.
+- **6 chiffres de popularité explicitement réfutés** (transparence, ne pas réutiliser) : backtrader (22,5k stars/5,2k forks/2 404 commits/63 PR), zipline-reloaded (release v3.1.1 du 23/07/2025), Backtesting.py (8,7k stars/1,5k forks/434 commits), freqtrade (52,3k stars/10,9k forks), QuantStats (7,4k stars/1,2k forks/v0.0.81) — signe que les stats GitHub en cache/recherche web peuvent être obsolètes ; vérification directe sur le dépôt nécessaire avant publication.
+- **Source dominante unique** : toutes les claims confirmées reposent sur des sources primaires GitHub (README, releases), pas sur les comparatifs tiers demandés (QuantStart, Hudson & Thames, Alpha Architect) — aucun n'a produit de claim survivant au vote 3-0.
+- **Structure freemium non détaillée** : la démarcation exacte vectorbt (OSS) vs VectorBT PRO n'est connue que via discussions des mainteneurs, pas d'audit feature-par-feature.
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_
