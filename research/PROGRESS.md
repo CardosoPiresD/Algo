@@ -8,7 +8,7 @@
 - **Portée** : marchés **US en priorité** ; Europe/Asie **uniquement sources triées sur le volet, les plus fiables**.
 - **Crypto** : hors périmètre primaire (mentionnée seulement si transversale).
 - **Langue** : français. Orientation **informative** (pas un conseil financier).
-- **Cadence** : ~15 min entre cycles, 8 cycles (~2 h). _(condensé depuis 30 min/4 h à la demande de l'utilisateur — profondeur par cycle inchangée)_
+- **Cadence** : **~5 h entre cycles** (8 cycles, ~35-40 h au total). _(Ajustée le 2026-07-15 : le plafond d'usage de session — reset sur fenêtre glissante — a été atteint dès le cycle 2 avec un espacement de 15 min ; espacer à 5h laisse le quota se régénérer entre chaque cycle et évite les échecs de vérification/synthèse en cascade. Profondeur par cycle inchangée.)_
 - **Livrable** : `research/RAPPORT_BOURSE.md` (cumulatif), commit/push à chaque cycle.
 
 ## Plan thématique des cycles
