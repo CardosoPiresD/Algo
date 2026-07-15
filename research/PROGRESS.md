@@ -15,7 +15,7 @@
 
 | Cycle | Thème | Statut |
 |------:|-------|--------|
-| 1 | Signaux techniques & microstructure | ⏳ À faire |
+| 1 | Signaux techniques & microstructure | ✅ Fait (2026-07-15 ~01:40 UTC) |
 | 2 | Signaux fondamentaux, macro & sentiment | ⏳ À faire |
 | 3 | Stratégies quantitatives & littérature académique | ⏳ À faire |
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⏳ À faire |
@@ -26,8 +26,19 @@
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
 
-_(vide au départ — se remplit au fil des cycles)_
+**Reliquats du cycle 1** (thème 1 non couvert intégralement par des claims vérifiés) :
+- [ ] Signaux de **volatilité** : VIX/term structure, volatility clustering, régimes de volatilité → à intégrer au cycle 3 (littérature quant) ou via un focus dédié.
+- [ ] Signaux de **volume** : OBV, VWAP, volume profile → à rattraper (cycle 3 ou 6/exécution pour VWAP).
+- [ ] **Bid-ask spread & price impact** au sens large (au-delà de l'OFI) → cycle 6 (exécution) est le meilleur véhicule.
+- [ ] **Patterns chartistes** (têtes-épaules etc., preuve scientifique — Lo, Mamaysky & Wang 2000) → cycle 3.
+- [ ] **Détection de régimes** (HMM, filtres, changepoint) → cycle 3 (ML/littérature académique).
+- [ ] Re-vérifier les 4 claims « unverified » du cycle 1 (détails Brock 1992, résultats Rink 2023) → opportuniste au cycle 8.
+- [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
 
-_(horodatage, thème, nb de sources, ajouts principaux — se remplit au fil des cycles)_
+### Cycle 1 — 2026-07-15 ~01:40 UTC — Signaux techniques & microstructure
+- **Volume** : 5 angles de recherche, 22 sources lues, 78 claims extraits, 25 vérifiés (3 votes contradictoires/claim) → **19 confirmés, 2 réfutés, 4 non vérifiés** (~104 agents).
+- **Ajouts principaux** : (i) indicateurs techniques classiques — pouvoir prédictif historique réel (Brock-Lakonishok-LeBaron 1992) mais érodé, annulé par les coûts et le data-snooping (Park & Irwin ; Bajgrowicz & Scaillet ; Rink 2023) ; (ii) momentum cross-sectionnel et time-series = anomalie la plus robuste (Jegadeesh-Titman ; Moskowitz-Ooi-Pedersen ; survey Wiest 2023), variantes residual/risk-managed ; (iii) OFI/carnet d'ordres — fort R² explicatif court terme ; (iv) enseignements méthodo (tests hors-échantillon, Reality Check/SPA, coûts).
+- **Incidents** : 1er run échoué à la synthèse (schéma JSON trop strict → corrigé en markdown libre) ; ~12 votes de vérification perdus sur limite de session (claims marqués « unverified », listés en gaps).
+- **Gaps reportés** : volatilité/VIX, volume/VWAP, spread/price impact, patterns chartistes, HMM/régimes (voir section Lacunes).
