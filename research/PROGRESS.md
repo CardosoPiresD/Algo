@@ -18,7 +18,7 @@
 | 1 | Signaux techniques & microstructure | ✅ Fait (2026-07-15 ~01:40 UTC) |
 | 2 | Signaux fondamentaux, macro & sentiment | ✅ Fait (2026-07-15 ~11:53-12:07 UTC, retry) |
 | 3 | Stratégies quantitatives & littérature académique | ✅ Fait (2026-07-15 ~12:xx-13:xx UTC) |
-| 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais très incomplet — complément requis (2026-07-15 ~13:xx UTC) |
+| 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais toujours incomplet après 2 tentatives (2026-07-15 ~13:xx UTC) — diagnostic structurel, voir gaps |
 | 5 | Outils, frameworks & GitHub | ⏳ À faire |
 | 6 | Exécution, brokers & infrastructure | ⏳ À faire |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⏳ À faire |
@@ -26,14 +26,14 @@
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
 
-**⚠️ Reliquats MAJEURS du cycle 4** (le brief entier est quasi non couvert — priorité haute pour un complément dédié) :
+**⚠️ Reliquats MAJEURS du cycle 4/4bis** (2 tentatives, diagnostic structurel — voir note ci-dessous) :
 - [ ] Fournisseurs de données de marché US : Polygon.io, Alpha Vantage, IEX Cloud, Tiingo, EOD Historical Data, Nasdaq Data Link, Twelve Data, Databento (couverture, latence, coût, niveaux L1/L2/L3/tick).
 - [ ] Acteurs institutionnels : Bloomberg, Refinitiv/LSEG, FactSet.
-- [ ] SEC EDGAR (accès gratuit, API).
+- [x] ~~SEC EDGAR (accès gratuit, API)~~ → **couvert au cycle 4bis** (architecture, fraîcheur, full-text search, rate limits).
 - [ ] Alt-data commerciaux : RavenPack, Thinknum, Quandl alt-data (offre concrète, au-delà de l'étude sociologique confirmée).
 - [ ] Biais de données : survivorship bias, point-in-time vs restated data, look-ahead bias, ajustements corporate actions.
 - [ ] Sources Europe/Asie : Euronext, Xetra, LSE et équivalents fiables.
-- **Cause probable** : 6 angles de recherche pour un brief couvrant ~6 sous-thèmes distincts → dilution ; beaucoup de pages fournisseurs (marketing) ont produit peu de « claims falsifiables » exploitables par le pipeline de vérification.
+- **Diagnostic (2 tentatives)** : le pipeline de vérification adversariale (conçu pour des affirmations académiques falsifiables) peine structurellement sur du contenu comparatif produit/fournisseur (pages marketing, tarifs) — cycle 4 (6 angles, brief large) et cycle 4bis (5 angles, brief resserré à 5 sujets précis) ont tous deux sous-performé, seul EDGAR (sujet factuel/officiel, pas comparatif) a bien fonctionné. **Ne pas retenter une 3e fois avec la même méthode** — envisager une recherche web directe non-adversariale pour ces sous-thèmes si on veut les combler.
 
 **Reliquats du cycle 3** (thème 3 non couvert intégralement par des claims vérifiés) :
 - [ ] **Détection de régimes** (HMM, changepoint detection) → toujours pas couvert (déjà en gap depuis cycle 1).
@@ -58,6 +58,11 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 4bis — 2026-07-15 ~13:xx UTC — Données & flux de marché (complément ciblé, toujours partiel)
+- **Volume** : 5 angles précisément ciblés (fournisseurs US, institutionnels, EDGAR, biais, EU/Asie), 24 sources, 5 claims extraits, 5 vérifiés → **4 confirmés (0 réfuté), tous unanimes** (46/46 agents, **1,4M tokens**, 266 tool calls, ~16 min).
+- **Résultat** : 1 seul des 5 sujets ciblés a produit des claims (SEC EDGAR — architecture API, fraîcheur temps réel, full-text search depuis 2001, rate limits). Les 4 autres sujets (fournisseurs US, institutionnels, biais académiques, EU/Asie) : **zéro claim vérifié**, malgré un ciblage plus précis qu'au cycle 4.
+- **Diagnostic** : confirmé — le pipeline de vérification adversariale ne convient pas à du contenu comparatif/marketing (fournisseurs, tarifs). Fonctionne bien seulement sur du contenu factuel officiel (EDGAR) ou académique (papiers peer-reviewed). **Décision : ne pas retenter une 3e fois avec cette méthode**, passer au cycle 5.
 
 ### Cycle 4 — 2026-07-15 ~13:xx UTC — Données & flux de marché ⚠️ INCOMPLET
 - **Volume** : 6 angles, 29 sources, 8 claims extraits (rendement anormalement bas), 8 vérifiés → **6 confirmés, 2 réfutés** (61/61 agents — nettement moins que les ~103-104 des cycles précédents ; **1,9M tokens**, 371 tool calls, ~24 min).

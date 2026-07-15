@@ -234,9 +234,9 @@ Hsu & Kuan (2005, Journal of Financial Econometrics) appliquent conjointement le
 
 ---
 
-# 4. Données & flux de marché ⚠️ (couverture très partielle — complément nécessaire)
+# 4. Données & flux de marché ⚠️ (couverture partielle malgré 2 tentatives — voir diagnostic)
 
-> **Cycle 4** — 29 sources lues, 8 affirmations extraites, 8 vérifiées → **6 confirmées, 2 réfutées**. Rendement anormalement faible (61 agents contre ~103-104 les cycles précédents) : les 6 angles de recherche n'ont produit que très peu d'affirmations vérifiables (beaucoup de pages marketing/documentation produit, peu de « claims falsifiables »). **La quasi-totalité du brief demandé (fournisseurs de données US, acteurs institutionnels, SEC EDGAR, biais de données, sources EU/Asie) n'est PAS couverte** par ce cycle. Rapport brut : `cycles/cycle-04-donnees-flux-marche.md`.
+> **Cycle 4** — 29 sources lues, 8 affirmations extraites, 8 vérifiées → **6 confirmées, 2 réfutées**. Rendement anormalement faible (61 agents contre ~103-104 les cycles précédents) : les 6 angles de recherche n'ont produit que très peu d'affirmations vérifiables (beaucoup de pages marketing/documentation produit, peu de « claims falsifiables »). **La quasi-totalité du brief demandé (fournisseurs de données US, acteurs institutionnels, SEC EDGAR, biais de données, sources EU/Asie) n'est PAS couverte** par ce cycle. Rapport brut : `cycles/cycle-04-donnees-flux-marche.md`. **Cycle 4bis** (complément ciblé, 46 agents) a rattrapé SEC EDGAR mais rien d'autre — voir plus bas.
 
 ## Ce qui est confirmé
 
@@ -246,14 +246,21 @@ Profondeur historique (20+ ans, jusqu'en 2003), processus de contrôle qualité 
 ### Nature de la littérature académique sur les alt-data — *Confiance : haute*
 Hansen & Borch (2022, Big Data & Society, [SAGE](https://journals.sagepub.com/doi/10.1177/20539517211070701)) : étude **qualitative/sociologique** (213 entretiens, 2014-2020), **pas** une démonstration quantitative du pouvoir prédictif des alt-data (satellite, cartes bancaires, sentiment web). Introduit « prospecting » et « assetization » comme concepts de commercialisation des alt-data. **À retenir : cette source documente la pratique du secteur, elle ne prouve statistiquement rien sur l'efficacité des alt-data.**
 
-## ⚠️ Ce qui manque entièrement (à traiter en complément prioritaire)
+## SEC EDGAR (complément cycle 4bis) — *Confiance : haute*
+
+> 46 agents, 24 sources, 5 claims extraits/vérifiés → **4 confirmés (0 réfuté)**, tous unanimes (3-0). Rapport brut : `cycles/cycle-04bis-donnees-flux-marche-complement.md`.
+
+**Architecture technique** : API hébergées sur data.sec.gov, format JSON, accès **gratuit sans authentification ni clé d'API**. Couvrent l'historique des dépôts par société et les données XBRL des états financiers (10-Q, 10-K, 8-K, 20-F, 40-F, 6-K et variantes). **Fraîcheur** : quasi temps réel — API submissions <1s de délai typique, API XBRL <1 min après diffusion. **EDGAR Full Text Search** : recherche en texte intégral de tous les dépôts électroniques depuis **2001**, pièces jointes incluses. **Contraintes d'usage** : limite de **10 requêtes/seconde par IP**, en-tête **User-Agent obligatoire** (nom + email) sous peine de 403 Forbidden. Source primaire : [SEC.gov — EDGAR APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces).
+
+## ⚠️ Ce qui manque toujours entièrement (2 tentatives infructueuses — diagnostic structurel)
 
 - **Fournisseurs de données de marché US** : Polygon.io, Alpha Vantage, IEX Cloud, Tiingo, EOD Historical Data, Nasdaq Data Link, Twelve Data, Databento — couverture, latence, coût, niveaux L1/L2/L3/tick.
 - **Acteurs institutionnels** : Bloomberg, Refinitiv/LSEG, FactSet — positionnement, cas d'usage.
-- **SEC EDGAR** : accès gratuit, API, données fondamentales officielles.
-- **Alt-data commerciaux** : RavenPack, Thinknum, Quandl alt-data — offre concrète (au-delà de l'étude sociologique ci-dessus).
+- **Alt-data commerciaux** : RavenPack, Thinknum, Quandl alt-data — offre concrète (au-delà de l'étude sociologique du cycle 4).
 - **Biais de données** : survivorship bias, point-in-time vs restated data, look-ahead bias, ajustements corporate actions (splits/dividendes).
 - **Sources Europe/Asie** : Euronext, Deutsche Börse/Xetra, LSE, et équivalents fiables.
+
+**Pourquoi ça ne marche pas avec cette méthode** : sur deux tentatives (cycle 4 et 4bis), le pipeline de vérification adversariale — conçu pour des affirmations académiques falsifiables — peine à extraire des claims vérifiables de contenu de type comparatif produit/fournisseur (pages marketing, tableaux de tarification), par nature moins « falsifiable » qu'un résultat de papier académique. Une 3e tentative identique a peu de chances de mieux réussir ; une approche différente (recherche web directe non-adversariale, ou lecture manuelle de la documentation officielle des fournisseurs) serait plus adaptée à ce sous-thème spécifique.
 
 ---
 
