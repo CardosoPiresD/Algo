@@ -21,10 +21,17 @@
 | 4 | Données & flux de marché (APIs, fournisseurs) | ⚠️ Fait mais toujours incomplet après 2 tentatives (2026-07-15 ~13:xx UTC) — diagnostic structurel, voir gaps |
 | 5 | Outils, frameworks & GitHub | ✅ Fait (2026-07-15 ~13:xx-14:xx UTC) |
 | 6 | Exécution, brokers & infrastructure | ⚠️ Fait mais inégal (2026-07-15 ~14:xx UTC) — voir gaps |
-| 7 | Gestion du risque, bonnes pratiques & pièges | ⏳ À faire |
+| 7 | Gestion du risque, bonnes pratiques & pièges | ⚠️ Fait mais partiel (2026-07-15 ~15:xx UTC) — voir gaps |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 7** (2/5 sous-thèmes couverts seulement — priorité haute pour cycle 8) :
+- [ ] **VaR / Expected Shortfall** : limites documentées (Taleb, Basel), supériorité ES.
+- [ ] **Overfitting de backtest** : Lopez de Prado (deflated Sharpe ratio, PBO), Bailey/Borwein/Zhu.
+- [ ] **Biais méthodologiques** : impact chiffré survivorship bias, look-ahead bias avec exemples.
+- [ ] **Finance comportementale** : Barber & Odean (overconfidence, loss aversion, disposition effect) — absent malgré centralité.
+- [ ] **Rebalancing & diversification** : fréquence optimale, limites mathématiques sur actifs corrélés.
 
 **Reliquats du cycle 6** (couverture inégale — 4/6 sous-thèmes non couverts) :
 - [ ] **Alpaca** : API, rate limits, paper trading — zéro claim malgré demande explicite (contraste avec IBKR/Tradier qui ont bien fonctionné).
@@ -73,6 +80,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 7 — 2026-07-15 ~15:xx UTC — Gestion du risque, bonnes pratiques & pièges ⚠️ PARTIEL
+- **Volume** : 5 angles, 22 sources, 21 claims extraits, 21 vérifiés → **18 confirmés, 3 réfutés** fusionnés en 5 findings (92/92 agents, **3,22M tokens**, 794 tool calls, ~51 min, réussi en un seul passage).
+- **Ajouts principaux** : volatility targeting (Moreira & Muir 2017 ; DeMiguel et al. 2024) — mais débat non tranché, contesté par Cederburg et al. (2020) et Barroso & Detzel (2021) hors échantillon/après coûts ; Kelly — contrepoint académique (Hsieh-Barmish-Gubner) montrant qu'il peut être trop conservateur, pas seulement trop agressif ; stop-loss — efficacité conditionnelle au régime (Kaminski & Lo 2014 ; Lo & Remorov 2017).
+- **⚠️ Couverture partielle** : seulement 3 des 5 sous-thèmes du brief couverts (vol-scaling, Kelly, stop-loss). VaR/CVaR, overfitting de backtest (Lopez de Prado — pourtant central pour ce projet), biais look-ahead/survivorship chiffrés, finance comportementale (Barber & Odean), rebalancing/diversification : **tous à zéro claim vérifié**.
+- **Gaps reportés, priorité haute pour cycle 8** : VaR/ES, Lopez de Prado (deflated Sharpe/PBO), survivorship/look-ahead bias chiffrés, Barber & Odean, rebalancing.
 
 ### Cycle 6 — 2026-07-15 ~14:xx UTC — Exécution, brokers & infrastructure ⚠️ INÉGAL
 - **Volume** : 6 angles, 25 sources, 21 claims extraits, 21 vérifiés → **20 confirmés, 1 réfuté** fusionnés en 4 findings (96/96 agents, **3,11M tokens**, 664 tool calls, ~40 min, réussi en un seul passage).

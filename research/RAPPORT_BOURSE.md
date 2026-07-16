@@ -345,4 +345,29 @@ Agrégées par jeton, fenêtres glissantes d'1 minute. Données marché/compte/o
 
 ---
 
+# 7. Gestion du risque, bonnes pratiques & pièges ⚠️ (couverture partielle)
+
+> **Cycle 7** — 22 sources lues, 21 affirmations extraites, 21 vérifiées → **18 confirmées, 3 réfutées**, fusionnées en 5 findings. Rapport brut : `cycles/cycle-07-gestion-risque-bonnes-pratiques.md`. **Aucune preuve vérifiée** sur VaR/CVaR, overfitting de backtest (Lopez de Prado), biais look-ahead/survivorship, finance comportementale (Barber & Odean), rebalancing/diversification.
+
+## Ce qui est confirmé
+
+### Volatility targeting — mécanisme, gains, et contestation (débat non tranché) — *Confiance : haute*
+Moreira & Muir (2017, JoF) et DeMiguel, Martín-Utrera & Uppal (2024, JoF) : le vol-scaling améliore le Sharpe car la volatilité n'est pas compensée proportionnellement par le rendement espéré — pour le facteur marché US, ~4,9% d'alpha annuel, +25% de Sharpe vs buy-and-hold ; le portefeuille conditionnel de DeMiguel et al. (2024) surperforme même hors échantillon net de coûts. **Mais** Cederburg, O'Doherty, Wang & Yan (2020, JFE) et Barroso & Detzel (2021, Review of Finance) montrent que ces gains **s'effondrent hors échantillon et après coûts de transaction** pour la plupart des facteurs hors marché. **Débat académique non tranché — ne pas présenter le vol-timing comme « prouvé efficace » sans nuance.** Sources : [Moreira & Muir](https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12513), [DeMiguel et al. 2024](https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.13395).
+
+### Critère de Kelly — pas toujours « trop agressif » — *Confiance : haute*
+Contrairement au discours dominant justifiant le Kelly fractionnaire (Kelly théorique = trop agressif), Hsieh, Barmish & Gubner (IEEE 55th CDC 2016, [arXiv:1710.01786](https://arxiv.org/pdf/1710.01786)) démontrent via un « Restricted Betting Theorem » que le Kelly calculé sur distribution **empirique échantillonnée** (pas la vraie distribution) avec support non borné peut au contraire prescrire des paris **trop conservateurs**.
+
+### Stop-loss — efficacité conditionnelle au régime de marché — *Confiance : haute*
+Kaminski & Lo (2014, JFM) : sous marche aléatoire pure, le stop-loss diminue toujours le rendement espéré ; en présence de **momentum** il ajoute de la valeur, en présence de **retour à la moyenne** il nuit. Empiriquement (US 1950-2004) : certaines règles ajoutent 50-100 pb/mois pendant les stop-out, lié à un régime de « flights-to-quality ». Lo & Remorov (2017, JFM) : sur actions individuelles US, les stop-loss serrés **sous-performent le buy-and-hold** (coûts de transaction), sauf titres à forte autocorrélation sérielle. Sources : [Kaminski & Lo](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=968338), [Lo & Remorov](https://www.sciencedirect.com/science/article/abs/pii/S1386418117300472).
+
+## ⚠️ Ce qui manque entièrement (à traiter en complément)
+
+- **VaR / Expected Shortfall** : limites documentées (critiques de Taleb, cadre Basel), preuve de supériorité de l'ES comme mesure cohérente.
+- **Overfitting de backtest** : travaux de Lopez de Prado (deflated Sharpe ratio, probability of backtest overfitting), Bailey/Borwein/Zhu.
+- **Biais méthodologiques** : impact chiffré du survivorship bias, look-ahead bias documenté avec exemples précis.
+- **Finance comportementale appliquée au trading** : Barber & Odean (overconfidence, loss aversion, disposition effect) — totalement absent malgré sa centralité pour la question de recherche.
+- **Rebalancing & diversification** : fréquence optimale de rebalancing, limites mathématiques de la diversification sur actifs corrélés.
+
+---
+
 _(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_
