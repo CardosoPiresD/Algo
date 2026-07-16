@@ -22,18 +22,19 @@
 | 5 | Outils, frameworks & GitHub | ✅ Fait (2026-07-15 ~13:xx-14:xx UTC) |
 | 6 | Exécution, brokers & infrastructure | ⚠️ Fait mais inégal (2026-07-15 ~14:xx UTC) — voir gaps |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⚠️ Fait mais partiel (2026-07-15 ~15:xx UTC) — voir gaps |
-| 8 | Complément gaps prioritaires (risque) | ⚠️ Fait mais très incomplet (2026-07-15 ~15:xx UTC) — 1/5 sujets couverts |
+| 8 | Complément gaps prioritaires (risque) | ⚠️ Fait mais très incomplet (2026-07-15 ~15:xx UTC) — 1/5 sujets couverts via pipeline |
+| 8bis | Recherche manuelle (Lopez de Prado, VaR/ES, Barber & Odean, rebalancing) | ✅ Fait (2026-07-15 ~15:xx UTC) — hors pipeline adversarial |
 | 9 | Synthèse finale + sources EU/Asie | ⏳ À faire |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
 
-**Reliquats du cycle 8** (4/5 sujets ciblés toujours non couverts après tentative dédiée) :
-- [ ] **Overfitting de backtest** : deflated Sharpe ratio, PBO (Lopez de Prado, Bailey/Borwein/Zhu) — non couvert après 2 tentatives.
-- [ ] **VaR/Expected Shortfall** : Artzner et al. 1999, critiques Taleb, Basel — non couvert.
-- [ ] **Finance comportementale** : Barber & Odean, disposition effect — non couvert malgré papiers très célèbres/faciles à trouver (diagnostic : limite du pipeline sur ce cycle, pas rareté des sources).
-- [ ] **Rebalancing & diversification** — non couvert.
-- **Décision** : ne pas retenter une 3e fois avec le pipeline automatisé sur ces sujets précis — envisager une recherche manuelle directe (WebSearch/WebFetch hors pipeline adversarial) si on veut les combler, sinon les documenter comme limite assumée du rapport.
+**Reliquats du cycle 8 — COMBLÉS au cycle 8bis (recherche manuelle)** :
+- [x] ~~Overfitting de backtest~~ → couvert : Deflated Sharpe Ratio (Bailey & López de Prado) + PBO/CSCV (Bailey-Borwein-López de Prado-Zhu).
+- [x] ~~VaR/Expected Shortfall~~ → couvert : Artzner et al. 1999 (4 axiomes, non-subadditivité de la VaR, ES cohérente).
+- [x] ~~Finance comportementale~~ → couvert : Barber & Odean 2000 (chiffres précis 11,4%/18,5%/17,9%), Shefrin & Statman 1985 (disposition effect).
+- [x] ~~Rebalancing & diversification~~ → couvert : étude Vanguard (fréquence n'affecte pas le rendement), papier multi-actifs (fréquence optimale plus faible).
+- **Note** : confiance légèrement inférieure au reste du rapport (recherche manuelle single-pass, pas de vérification adversariale à 3 votes) — voir `cycles/cycle-08bis-recherche-manuelle-gaps.md`. Lecture directe des PDF primaires bloquée (403) même en manuel — confirme un blocage réseau/proxy plutôt qu'un problème de méthode.
 
 **Reliquats du cycle 7** (2/5 sous-thèmes couverts seulement — priorité haute pour cycle 8) :
 - [ ] **VaR / Expected Shortfall** : limites documentées (Taleb, Basel), supériorité ES.
@@ -89,6 +90,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 8bis — 2026-07-15 ~15:xx UTC — Recherche manuelle (hors pipeline) sur gaps restants
+- **Méthode** : après échec du pipeline automatisé sur 4 sujets (2 tentatives, cycles 6/7/8), recherche manuelle directe via WebSearch/WebFetch (sans vérification adversariale à 3 votes) — décision utilisateur suite à question posée.
+- **Résultat** : les 4 sujets comblés avec citations précises — Deflated Sharpe Ratio & PBO (Bailey/López de Prado/Borwein/Zhu), Artzner et al. 1999 (VaR non-subadditive, ES cohérente), Barber & Odean 2000 (chiffres exacts 11,4%/18,5%/17,9%, 66 465 foyers) + Shefrin & Statman 1985 (disposition effect), étude Vanguard sur le rebalancing + papier multi-actifs.
+- **Constat méthodologique important** : la lecture directe des PDF primaires (SSRN, davidhbailey.com, Wiley, Berkeley) a échoué en 403 même en manuel — confirme que le blocage rencontré par le pipeline automatisé sur plusieurs cycles est probablement un blocage réseau/proxy général, pas une limite de la méthode de recherche automatisée en tant que telle. Les informations ont pu être reconstruites via recherche croisée (WebSearch) sur plusieurs résultats indépendants convergents.
+- **Confiance** : légèrement inférieure au reste du rapport (pas de contre-vérification à 3 votes), mais citations précises et croisées.
 
 ### Cycle 8 — 2026-07-15 ~15:xx UTC — Complément gaps prioritaires (risque) ⚠️ TRÈS INCOMPLET
 - **Volume** : 5 angles ciblés (López de Prado, VaR/ES, Barber & Odean, biais CRSP, rebalancing), 21 sources, 3 claims extraits, 3 vérifiés → **3 confirmés** fusionnés en 1 finding (37/37 agents, **1,19M tokens**, 224 tool calls, ~15 min).

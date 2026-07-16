@@ -366,14 +366,23 @@ Kaminski & Lo (2014, JFM) : sous marche aléatoire pure, le stop-loss diminue to
 
 Elton, Gruber & Blake (2001, *Journal of Finance*, [DOI 10.1111/0022-1082.00410](https://onlinelibrary.wiley.com/doi/abs/10.1111/0022-1082.00410)) : la base CRSP Mutual Fund présente des biais chiffrés — **« omission bias »** (données manquantes pour des fonds aux caractéristiques différentes, effet équivalent au survivorship bias), **rendements biaisés à la hausse** (mois de fusion/disparition inexacts dans ~50% des cas), écarts CRSP/Morningstar concentrés sur données anciennes et petits fonds (<15M$). *(Source unique, données historiques fin 1990s/2001 — illustration du phénomène, pas évaluation de la qualité actuelle de CRSP.)*
 
-## ⚠️ Ce qui manque toujours entièrement (2 tentatives ciblées infructueuses)
+## Complément manuel — gaps comblés hors pipeline adversarial
 
-- **Overfitting de backtest** : deflated Sharpe ratio, PBO (Lopez de Prado, Bailey/Borwein/Zhu) — **non couvert malgré 2 tentatives**, dont un cycle dédié avec brief resserré.
-- **VaR / Expected Shortfall** : limites documentées (Taleb, Basel), Artzner et al. 1999 — non couvert.
-- **Finance comportementale** : Barber & Odean (overconfidence, disposition effect) — non couvert, malgré des papiers pourtant très célèbres et faciles à trouver en théorie.
-- **Rebalancing & diversification** : fréquence optimale, limites mathématiques — non couvert.
+> Après 2 échecs du pipeline automatisé sur ces 4 sujets, recherche effectuée **manuellement** (WebSearch/WebFetch direct, sans vérification contradictoire à 3 votes). Confiance légèrement inférieure au reste du rapport en conséquence — voir `cycles/cycle-08bis-recherche-manuelle-gaps.md` pour le détail complet et les réserves.
 
-**Diagnostic** : ce résultat est surprenant car ces papiers (Barber & Odean notamment) sont parmi les plus cités de la finance comportementale — leur absence suggère une limite du pipeline de recherche/extraction de claims sur ce cycle spécifique plutôt qu'une rareté réelle des sources.
+### Overfitting de backtest — Deflated Sharpe Ratio & PBO — *Confiance : moyenne*
+Bailey & López de Prado, « The Deflated Sharpe Ratio » ([SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)) : corrige le Sharpe ratio mesuré pour le **biais de sélection sous tests multiples** et la **non-normalité des rendements** — répond à « quelle est la probabilité que ce Sharpe observé soit un faux positif, étant donné le nombre d'essais effectués ? ». Bailey, Borwein, López de Prado & Zhu, « The Probability of Backtest Overfitting » (*Journal of Computational Finance*, 20(4), 39-69, [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253)) : méthode CSCV (validation croisée symétrique combinatoire) estimant la probabilité qu'une stratégie sélectionnée in-sample sous-performe hors-échantillon. Stratégies à Sharpe élevé, historique long, peu de paramètres et peu d'essais peuvent atteindre un **PBO < 1%** — preuve forte d'un edge réel.
+
+### VaR vs Expected Shortfall — mesures de risque cohérentes — *Confiance : haute*
+Artzner, Delbaen, Eber & Heath (1999), « Coherent Measures of Risk » (*Mathematical Finance* 9(3), 203-228, [DOI](https://onlinelibrary.wiley.com/doi/10.1111/1467-9965.00068)) : 4 axiomes d'une mesure de risque cohérente — monotonicité, invariance par translation, homogénéité positive, **sous-additivité**. **La VaR échoue à la sous-additivité** hors cas gaussien (queues épaisses notamment) — la VaR d'un portefeuille combiné peut dépasser la somme des VaR individuelles, contredisant le principe de diversification. **L'Expected Shortfall/CVaR est cohérente** : résume la perte moyenne au-delà du quantile (pas seulement le quantile), satisfait les 4 axiomes.
+
+### Finance comportementale — overconfidence et disposition effect — *Confiance : haute*
+Barber & Odean (2000), « Trading Is Hazardous to Your Wealth » (*Journal of Finance* 55(2), 773-806) : sur **66 465 foyers** (1991-1996), le quintile qui trade le plus gagne **11,4%/an net de coûts** contre **18,5%** pour le quintile buy-and-hold, marché à **17,9%** — écart de ~7 points attribué à l'**overconfidence**. Shefrin & Statman (1985), définition fondatrice du **disposition effect** (vendre les gagnants trop tôt, garder les perdants trop longtemps) — décrit comme l'un des faits les plus robustes du trading individuel.
+
+### Rebalancing & limites de la diversification — *Confiance : moyenne-haute*
+Vanguard (Jaconetti, Kinniry & Zilbering, 2010/révisé), portefeuille 60/40 : rebalancer **mensuellement/trimestriellement n'améliore ni le risque ni le rendement** vs annuel — augmente juste les coûts. L'intérêt du rebalancing est la **réduction du risque** (maintien de l'allocation cible), pas le rendement. Papier sur portefeuilles multi-actifs ([arXiv:1510.05097](https://arxiv.org/pdf/1510.05097)) : fréquence optimale **plus faible** pour un portefeuille multi-actifs (ex. cité : 3,48 ans pour 10 actifs vs 1,84 an pour 1 actif, à seuil 1%). Limite mathématique : le bénéfice de diversification décroît avec la corrélation, jusqu'à disparaître à corrélation = 1.
+
+**Note méthodologique** : la lecture directe des PDF primaires (SSRN, davidhbailey.com, Wiley, Berkeley) a échoué (403) même en recherche manuelle — confirme que le blocage est probablement réseau/proxy, pas spécifique au pipeline automatisé. Chiffres corroborés par recherche croisée multi-sources, sans vérification contradictoire formelle.
 
 ---
 
