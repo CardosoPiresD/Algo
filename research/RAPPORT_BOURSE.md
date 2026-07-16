@@ -360,13 +360,20 @@ Contrairement au discours dominant justifiant le Kelly fractionnaire (Kelly thé
 ### Stop-loss — efficacité conditionnelle au régime de marché — *Confiance : haute*
 Kaminski & Lo (2014, JFM) : sous marche aléatoire pure, le stop-loss diminue toujours le rendement espéré ; en présence de **momentum** il ajoute de la valeur, en présence de **retour à la moyenne** il nuit. Empiriquement (US 1950-2004) : certaines règles ajoutent 50-100 pb/mois pendant les stop-out, lié à un régime de « flights-to-quality ». Lo & Remorov (2017, JFM) : sur actions individuelles US, les stop-loss serrés **sous-performent le buy-and-hold** (coûts de transaction), sauf titres à forte autocorrélation sérielle. Sources : [Kaminski & Lo](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=968338), [Lo & Remorov](https://www.sciencedirect.com/science/article/abs/pii/S1386418117300472).
 
-## ⚠️ Ce qui manque entièrement (à traiter en complément)
+## Biais méthodologiques — base CRSP Mutual Fund (complément cycle 8) — *Confiance : haute*
 
-- **VaR / Expected Shortfall** : limites documentées (critiques de Taleb, cadre Basel), preuve de supériorité de l'ES comme mesure cohérente.
-- **Overfitting de backtest** : travaux de Lopez de Prado (deflated Sharpe ratio, probability of backtest overfitting), Bailey/Borwein/Zhu.
-- **Biais méthodologiques** : impact chiffré du survivorship bias, look-ahead bias documenté avec exemples précis.
-- **Finance comportementale appliquée au trading** : Barber & Odean (overconfidence, loss aversion, disposition effect) — totalement absent malgré sa centralité pour la question de recherche.
-- **Rebalancing & diversification** : fréquence optimale de rebalancing, limites mathématiques de la diversification sur actifs corrélés.
+> 37 agents, 21 sources, 3 claims confirmés (1 finding). Rapport brut : `cycles/cycle-08-gaps-prioritaires-risque.md`.
+
+Elton, Gruber & Blake (2001, *Journal of Finance*, [DOI 10.1111/0022-1082.00410](https://onlinelibrary.wiley.com/doi/abs/10.1111/0022-1082.00410)) : la base CRSP Mutual Fund présente des biais chiffrés — **« omission bias »** (données manquantes pour des fonds aux caractéristiques différentes, effet équivalent au survivorship bias), **rendements biaisés à la hausse** (mois de fusion/disparition inexacts dans ~50% des cas), écarts CRSP/Morningstar concentrés sur données anciennes et petits fonds (<15M$). *(Source unique, données historiques fin 1990s/2001 — illustration du phénomène, pas évaluation de la qualité actuelle de CRSP.)*
+
+## ⚠️ Ce qui manque toujours entièrement (2 tentatives ciblées infructueuses)
+
+- **Overfitting de backtest** : deflated Sharpe ratio, PBO (Lopez de Prado, Bailey/Borwein/Zhu) — **non couvert malgré 2 tentatives**, dont un cycle dédié avec brief resserré.
+- **VaR / Expected Shortfall** : limites documentées (Taleb, Basel), Artzner et al. 1999 — non couvert.
+- **Finance comportementale** : Barber & Odean (overconfidence, disposition effect) — non couvert, malgré des papiers pourtant très célèbres et faciles à trouver en théorie.
+- **Rebalancing & diversification** : fréquence optimale, limites mathématiques — non couvert.
+
+**Diagnostic** : ce résultat est surprenant car ces papiers (Barber & Odean notamment) sont parmi les plus cités de la finance comportementale — leur absence suggère une limite du pipeline de recherche/extraction de claims sur ce cycle spécifique plutôt qu'une rareté réelle des sources.
 
 ---
 

@@ -22,9 +22,18 @@
 | 5 | Outils, frameworks & GitHub | ✅ Fait (2026-07-15 ~13:xx-14:xx UTC) |
 | 6 | Exécution, brokers & infrastructure | ⚠️ Fait mais inégal (2026-07-15 ~14:xx UTC) — voir gaps |
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⚠️ Fait mais partiel (2026-07-15 ~15:xx UTC) — voir gaps |
+| 8 | Complément gaps prioritaires (risque) | ⚠️ Fait mais très incomplet (2026-07-15 ~15:xx UTC) — 1/5 sujets couverts |
+| 9 | Synthèse finale + sources EU/Asie | ⏳ À faire |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
+
+**Reliquats du cycle 8** (4/5 sujets ciblés toujours non couverts après tentative dédiée) :
+- [ ] **Overfitting de backtest** : deflated Sharpe ratio, PBO (Lopez de Prado, Bailey/Borwein/Zhu) — non couvert après 2 tentatives.
+- [ ] **VaR/Expected Shortfall** : Artzner et al. 1999, critiques Taleb, Basel — non couvert.
+- [ ] **Finance comportementale** : Barber & Odean, disposition effect — non couvert malgré papiers très célèbres/faciles à trouver (diagnostic : limite du pipeline sur ce cycle, pas rareté des sources).
+- [ ] **Rebalancing & diversification** — non couvert.
+- **Décision** : ne pas retenter une 3e fois avec le pipeline automatisé sur ces sujets précis — envisager une recherche manuelle directe (WebSearch/WebFetch hors pipeline adversarial) si on veut les combler, sinon les documenter comme limite assumée du rapport.
 
 **Reliquats du cycle 7** (2/5 sous-thèmes couverts seulement — priorité haute pour cycle 8) :
 - [ ] **VaR / Expected Shortfall** : limites documentées (Taleb, Basel), supériorité ES.
@@ -80,6 +89,12 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 8 — 2026-07-15 ~15:xx UTC — Complément gaps prioritaires (risque) ⚠️ TRÈS INCOMPLET
+- **Volume** : 5 angles ciblés (López de Prado, VaR/ES, Barber & Odean, biais CRSP, rebalancing), 21 sources, 3 claims extraits, 3 vérifiés → **3 confirmés** fusionnés en 1 finding (37/37 agents, **1,19M tokens**, 224 tool calls, ~15 min).
+- **Ajout** : biais chiffrés dans la base CRSP Mutual Fund (Elton, Gruber & Blake 2001) — omission bias, rendements biaisés à la hausse, mois de fusion inexacts ~50% du temps.
+- **⚠️ Échec quasi total sur le brief ciblé** : 4 des 5 sujets (López de Prado, VaR/ES, Barber & Odean, rebalancing) à zéro claim — troisième cycle consécutif (après 4bis et une partie du 6) où un brief resserré sujet-par-sujet ne suffit pas à faire remonter des claims vérifiées, y compris sur des papiers académiques très célèbres (Barber & Odean). Décision : ne pas retenter avec le pipeline automatisé, ces gaps restent des limites assumées du rapport sauf recherche manuelle dédiée.
+- **Total cycles ajusté** : 8→9 (cycle 9 = synthèse finale + EU/Asie, décidé après le cycle 7).
 
 ### Cycle 7 — 2026-07-15 ~15:xx UTC — Gestion du risque, bonnes pratiques & pièges ⚠️ PARTIEL
 - **Volume** : 5 angles, 22 sources, 21 claims extraits, 21 vérifiés → **18 confirmés, 3 réfutés** fusionnés en 5 findings (92/92 agents, **3,22M tokens**, 794 tool calls, ~51 min, réussi en un seul passage).
