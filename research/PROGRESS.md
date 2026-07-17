@@ -24,7 +24,8 @@
 | 7 | Gestion du risque, bonnes pratiques & pièges | ⚠️ Fait mais partiel (2026-07-15 ~15:xx UTC) — voir gaps |
 | 8 | Complément gaps prioritaires (risque) | ⚠️ Fait mais très incomplet (2026-07-15 ~15:xx UTC) — 1/5 sujets couverts via pipeline |
 | 8bis | Recherche manuelle (Lopez de Prado, VaR/ES, Barber & Odean, rebalancing) | ✅ Fait (2026-07-15 ~15:xx UTC) — hors pipeline adversarial |
-| 9 | Synthèse finale + sources EU/Asie | ⏳ À faire |
+| 9 | Sources EU/Asie + benchmarks quant | ✅ Fait (2026-07-17 ~08:xx UTC, retry après blocage nocturne) — 20 claims confirmés |
+| — | **Consolidation finale & dédup** | ✅ Fait (2026-07-17) — rapport clos, 9 sections, résumé exécutif final ajouté |
 | 8 | Synthèse transversale & sources fiables EU/Asie + dédup finale | ⏳ À faire |
 
 ## Lacunes / gaps identifiés (à combler par les prochains cycles)
@@ -90,6 +91,16 @@
 - [ ] OFI sur marchés **US** spécifiquement (Cont-Kukanov-Stoikov 2014 à sourcer directement) → cycle 3 ou 6.
 
 ## Journal des cycles
+
+### Cycle 9 — 2026-07-17 ~08:xx UTC — Sources EU/Asie + benchmarks quant de référence
+- **Incident** : le run initial (lancé 2026-07-16 ~20:xx UTC) s'est figé pendant ~11h (agent de vérification mort sans erreur explicite, probablement plafond de session nocturne) — fichier de sortie vide, aucune notification. Détecté par inspection directe du journal du workflow (dernière activité horodatée), puis repris via `resumeFromRunId` : les 52 agents déjà réussis ont rejoué depuis le cache, le reste s'est terminé en ~29 min.
+- **Volume** : 5 angles, 25 sources, 20 claims extraits, 20 vérifiés → **20 confirmés, 0 réfuté** (92/92 agents, **2,27M tokens**, 423 tool calls).
+- **Ajouts principaux** : momentum européen (TSM ~0,71%/mois, Heliyon 2023 ; momentum cross-sectionnel affaibli post-2007, small caps) ; *Value and Momentum Everywhere* (Asness-Moskowitz-Pedersen 2013) couvrant explicitement Europe continentale + Japon ; **découverte clé** — 83%+ des anomalies US ne survivent PAS sur le marché A-share chinois (Li, Liu, Liu & Wei 2024, Management Science).
+- **Gaps non couverts** (4/5 angles) : données officielles de bourses (Euronext, Deutsche Börse, LSE), régulateurs (ESMA/MiFID II, AMF), accès données Asie (JPX, HKEX), communautés/benchmarks (Quantpedia, SSRN, arXiv q-fin, CFA Institute) — pattern habituel (contenu comparatif/institutionnel mal servi par le pipeline adversarial).
+
+### Consolidation finale — 2026-07-17
+- Rapport maître relu intégralement, structure vérifiée (9 sections, pas de doublons de titres), sommaire mis à jour, section 9 ajoutée avec résumé exécutif final consolidant les forces/limites de l'ensemble du projet et un diagnostic méthodologique transversal (pipeline adversarial excelle sur académique/officiel, peine sur comparatif/commercial).
+- **Rapport clos** — 9 cycles de recherche + 1 complément manuel, committés et poussés à chaque étape.
 
 ### Cycle 8bis — 2026-07-15 ~15:xx UTC — Recherche manuelle (hors pipeline) sur gaps restants
 - **Méthode** : après échec du pipeline automatisé sur 4 sujets (2 tentatives, cycles 6/7/8), recherche manuelle directe via WebSearch/WebFetch (sans vérification adversariale à 3 votes) — décision utilisateur suite à question posée.

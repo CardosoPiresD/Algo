@@ -1,6 +1,6 @@
 # Rapport de recherche approfondie — La Bourse
 
-> **Rapport cumulatif** construit sur 8 cycles de recherche (quant/algo + investissement au sens large).
+> **Rapport cumulatif** construit sur 9 cycles de recherche + 1 complément manuel (quant/algo + investissement au sens large).
 > Portée : marchés **US en priorité**, Europe/Asie via sources triées sur le volet.
 > **Avertissement** : document **informatif** issu de recherches web sourcées et vérifiées — **ce n'est pas un conseil en investissement**. Les marchés comportent des risques de perte en capital.
 
@@ -14,8 +14,9 @@
 4. Données & flux de marché (APIs, fournisseurs)
 5. Outils, frameworks & GitHub
 6. Exécution, brokers & infrastructure
-7. Gestion du risque, bonnes pratiques & pièges
-8. Synthèse transversale & sources fiables EU/Asie
+7. Gestion du risque, bonnes pratiques & pièges (+ complément manuel : overfitting, VaR/ES, finance comportementale, rebalancing)
+8. Anomalies quant en Europe & Asie — transposabilité des signaux hors US
+9. Limites globales & couverture du rapport (résumé exécutif final)
 
 ---
 
@@ -386,4 +387,67 @@ Vanguard (Jaconetti, Kinniry & Zilbering, 2010/révisé), portefeuille 60/40 : r
 
 ---
 
-_(Le contenu est ajouté et enrichi à chaque cycle. Voir `PROGRESS.md` pour l'avancement.)_
+# 8. Anomalies quant en Europe & Asie — transposabilité des signaux hors US
+
+> **Cycle 9** — 25 sources lues, 20 affirmations extraites et vérifiées → **20 confirmées, 0 réfutée**. Rapport brut : `cycles/cycle-09-sources-eu-asie-benchmarks.md`. Angles couverts : équivalents académiques européens/asiatiques des anomalies US. **Non couverts** (malgré tentative) : données officielles de bourses (Euronext, Deutsche Börse, LSE), régulateurs (ESMA, AMF), accès données Asie (JPX, HKEX), communautés/benchmarks (Quantpedia, SSRN, arXiv q-fin, CFA Institute).
+
+## Résumé exécutif
+
+Ce cycle confirme que les grandes anomalies quant documentées aux US (momentum, value, momentum de série temporelle) possèdent des équivalents académiques rigoureux en Europe et en Asie — mais avec une **nuance majeure** : une étude de réplication chinoise montre que la **majorité des anomalies US ne survit pas** en dehors des marchés matures (US/Europe/Japon), ce qui limite fortement la transposabilité géographique naïve des signaux quant.
+
+## Momentum sur les marchés européens
+
+**Momentum de série temporelle (TSM)** — Vukovic, Ingenito & Maiti (2023, *Heliyon*, [DOI](https://doi.org/10.1016/j.heliyon.2023.e12989)) : anomalie **significative et persistante** sur 24 indices actions européens (2000-2020) — **~0,71%/mois** au-dessus du marché via un modèle à six facteurs. Équivalent européen direct de Moskowitz-Ooi-Pedersen (2012). *(Heliyon = mega-journal peer-reviewed mais sélectivité inférieure aux revues de finance de premier rang ; étude au niveau indices, pas actions individuelles.)*
+
+**Momentum cross-sectionnel** — étude sur **10 marchés actions européens** (*Finance Research Letters*, 2003-2015, données Thomson Datastream) : rendements de momentum **plus faibles** qu'ailleurs, **non significatifs sur 2007-2012** (crise financière + crise de la dette européenne), anomalie **concentrée dans les small caps**.
+
+## Value et momentum « partout » — preuve globale incluant Europe et Japon
+
+Asness, Moskowitz & Pedersen (2013), *Value and Momentum Everywhere* (*Journal of Finance* 68(3):929-985, DOI 10.1111/jofi.12021) : primes **value et momentum consistantes** à travers **8 marchés/classes d'actifs**, avec couverture **explicite d'Europe continentale et du Japon** (actions individuelles) en plus des US/UK, ainsi qu'obligations/devises/matières premières. Value et momentum **négativement corrélés** (jusqu'à −0,53) — motive leur combinaison. Article fondateur massivement cité, non périmé malgré sa date.
+
+## Marchés asiatiques — la plupart des anomalies US ne survivent PAS en Chine
+
+Li, Liu, Liu & Wei (2024), *Replicating and Digesting Anomalies in the Chinese A-Share Market* (*Management Science* 70(8):5066-5090, DOI 10.1287/mnsc.2023.4904) : réplication de **469 variables d'anomalies** (type Hou-Xue-Zhang 2020) sur le marché A-share chinois. **83,37% des anomalies ne génèrent PAS de spread significatif** en rendement brut ; après ajustement du risque, le taux d'échec monte à **84,22% (CAPM)** et **86,99% (Fama-French 3 facteurs)**. La procédure conventionnelle (breakpoints A-share complets + rendements équipondérés) est **méthodologiquement biaisée** (surpondère les microcaps). Les modèles factoriels **spécifiques à la Chine** (CH3, CH4) et le q-factor model expliquent le mieux les rendements A-share (CH3 : 53,85% des anomalies significatives expliquées).
+
+**Enseignement central** : la transposition mécanique de signaux US vers l'Asie est risquée — les marchés asiatiques exigent des modèles factoriels locaux et un contrôle strict des microcaps.
+
+## Tableau de synthèse
+
+| Marché | Anomalie testée | Verdict | Source |
+|---|---|---|---|
+| Europe (24 indices) | TSM | Présente, ~0,71%/mois | Heliyon 2023 |
+| Europe (10 pays) | Momentum cross-sectionnel | Présente mais affaiblie post-2007, small caps | Finance Research Letters 2017 |
+| Europe continentale + Japon | Value & Momentum | Présentes, facteur commun global | Journal of Finance 2013 |
+| Chine (A-share) | ~469 anomalies US | 83%+ ne survivent PAS | Management Science 2024 |
+
+## Limites de ce cycle & gaps
+
+- **Non couverts malgré tentative** : données officielles de bourses (Euronext, Deutsche Börse/Xetra, LSE — accès, coût, couverture), régulateurs (ESMA/MiFID II transparency data, AMF), accès aux données de marché asiatiques (JPX/TSE, HKEX), communautés/benchmarks quant (Quantpedia, SSRN Finance Network, arXiv q-fin, CFA Institute research) — aucun claim n'a survécu à la vérification sur ces 4 angles.
+- **Accès paywall** : plusieurs sources (ScienceDirect, INFORMS) en 403 — vérification par abstracts indexés et miroirs (PMC, RePEc, SSRN).
+- **Débat sur le TSM** : Huang, Li, Wang & Zhou (JFE 2020, « Time series momentum: Is it there? ») conteste sa robustesse statistique — les claims restent valides comme rapportant un résultat d'étude donné, pas un fait universellement établi.
+- **Généralisation asiatique incertaine** : l'échec massif en Chine se retrouve-t-il au Japon/Hong Kong, ou est-il spécifique à la microstructure A-share (poids microcaps, investisseurs retail) ? Question ouverte.
+
+---
+
+# 9. Limites globales & couverture du rapport
+
+## Résumé exécutif final
+
+Ce rapport synthétise **9 cycles de recherche approfondie** (+ 1 complément manuel) sur la bourse, couvrant le trading quantitatif/algorithmique et l'investissement au sens large, avec priorité aux marchés US et une extension ciblée vers l'Europe/l'Asie. **217+ claims ont été confirmées** à travers l'ensemble des cycles, chacune sourcée et — sauf mention contraire — vérifiée par un processus contradictoire à 3 votes indépendants.
+
+**Ce qui est solide** : les signaux techniques et de microstructure (cycle 1), les facteurs fondamentaux et la décroissance post-publication des anomalies (cycle 2), les stratégies quant et la littérature académique (cycle 3), l'écosystème d'outils open-source (cycle 5), l'infrastructure d'exécution IBKR/Tradier (cycle 6, partiellement), les fondamentaux de la gestion du risque — volatility targeting, Kelly, stop-loss (cycle 7) — et un complément solide sur l'overfitting de backtest, VaR/ES, la finance comportementale et le rebalancing (cycle 8bis, recherche manuelle). La transposabilité des anomalies vers l'Europe et l'Asie est également bien documentée (cycle 9), avec la nuance importante que la plupart des signaux US ne survit pas en Chine.
+
+**Ce qui reste partiel ou non couvert**, malgré des tentatives répétées (voir détail dans chaque section et dans `PROGRESS.md`) :
+- **Données & fournisseurs** (cycle 4/4bis) : Polygon.io, Alpha Vantage, IEX Cloud, Alpaca, Bloomberg/Refinitiv/FactSet — non couverts par claims vérifiés (contenu trop marketing/comparatif pour le pipeline de vérification adversariale).
+- **Exécution** (cycle 6) : papiers fondateurs directs d'Almgren-Chriss, Kyle (1985), Perold (1988) ; latence/colocation ; architecture logicielle (OMS) ; écart paper vs live trading.
+- **Outils spécifiques** (cycle 5) : backtrader (statut réel incertain), TA-Lib/pandas-ta, mlfinlab, PyPortfolioOpt.
+- **Sources EU/Asie opérationnelles** (cycle 9) : modalités d'accès aux données officielles (Euronext, Deutsche Börse, LSE, JPX, HKEX), bases réglementaires (ESMA/MiFID II, AMF), fiabilité exacte des communautés/benchmarks (Quantpedia, SSRN, arXiv q-fin, CFA Institute).
+- **Signaux techniques additionnels** (reportés depuis cycle 1) : détection de régimes (HMM/changepoint), indicateurs de volume (OBV/VWAP), patterns chartistes (Lo-Mamaysky-Wang).
+
+**Diagnostic méthodologique transversal** : le pipeline de recherche/vérification adversariale excelle sur du contenu **académique peer-reviewed** et des **faits officiels vérifiables** (documentation SEC, statistiques GitHub précises) — il produit régulièrement 18-23 claims confirmées par cycle sur ces terrains. Il **peine structurellement** sur du contenu **comparatif/commercial** (fournisseurs de données, brokers concurrents, outils listés sans littérature académique dédiée) et, de façon plus surprenante, a également échoué à plusieurs reprises sur des papiers académiques très célèbres (Barber & Odean) — ces derniers ont été comblés via une recherche manuelle directe qui a, elle, réussi rapidement. Ce constat suggère qu'une future itération de ce type de projet gagnerait à **combiner d'emblée** le pipeline automatisé (pour la profondeur académique et la vérification contradictoire) avec une recherche manuelle ciblée (pour les faits factuels ponctuels et le contenu commercial/comparatif), plutôt que de systématiser l'un ou l'autre.
+
+**Rappel** : ce document est **informatif**, construit à partir de recherches web vérifiées mais non exhaustives — il ne constitue pas un conseil en investissement. Les chiffres de performance cités (Sharpe ratios, rendements annualisés, etc.) sont des résultats historiques/académiques et ne garantissent aucune performance future.
+
+---
+
+_(Rapport clos au cycle 9. Voir `PROGRESS.md` pour le détail complet de chaque cycle et le journal des incidents.)_
