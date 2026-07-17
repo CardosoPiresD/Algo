@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+logs/
+reports/
+KILL_SWITCH
+HERMES_LIVE_ACKNOWLEDGED
+.pytest_cache/

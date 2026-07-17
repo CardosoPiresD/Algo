@@ -1,0 +1,80 @@
+# Hermes — configuration principale
+# Paper trading UNIQUEMENT. Le passage en argent réel exige une modification
+# explicite de `execution.account_type` ET la présence d'un fichier
+# HERMES_LIVE_ACKNOWLEDGED — double verrou volontaire.
+
+universe:
+  # Univers de départ : sous-ensemble liquide du S&P 500 (à étendre après backtest)
+  tickers:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - AMZN
+    - NVDA
+    - META
+    - JPM
+    - V
+    - JNJ
+    - UNH
+    - XOM
+    - PG
+    - HD
+    - COST
+    - ABBV
+    - MRK
+    - PEP
+    - KO
+    - WMT
+    - CSCO
+  benchmark: SPY
+
+strategy:
+  # Momentum cross-sectionnel classique : rendement 12 mois en excluant le
+  # dernier mois (12-1), cf. Jegadeesh & Titman — le mois le plus récent est
+  # exclu à cause du short-term reversal documenté.
+  lookback_months: 12
+  skip_months: 1
+  top_n: 5                    # nombre de titres détenus (long only au départ)
+  rebalance: monthly          # monthly | weekly
+  # Filtre time-series (Moskowitz-Ooi-Pedersen) : ne détenir un titre que si
+  # son propre rendement 12-1 est positif (sinon cash sur cette poche).
+  tsmom_filter: true
+
+risk:
+  # Vol-scaling conservateur : pondération inverse-volatilité (pas de
+  # vol-timing agressif — gains contestés hors-échantillon, cf. rapport §7).
+  vol_lookback_days: 60
+  target_annual_vol: 0.15     # cible de volatilité portefeuille
+  max_position_weight: 0.30   # aucune position > 30% du portefeuille
+  kelly_fraction: 0.5         # demi-Kelly appliqué au levier global (jamais >1)
+  trailing_stop_pct: 0.15     # trailing stop large (les stops serrés détruisent
+                              # de la valeur sur actions individuelles, Lo & Remorov 2017)
+  max_drawdown_circuit_breaker: 0.15  # coupe-circuit : trading désactivé au-delà
+  kill_switch_file: KILL_SWITCH        # si ce fichier existe à la racine → aucun ordre
+
+execution:
+  account_type: paper          # paper | live (live exige HERMES_LIVE_ACKNOWLEDGED)
+  ibkr:
+    host: 127.0.0.1
+    port: 7497                 # 7497 = TWS paper par défaut ; 4002 = IB Gateway paper
+    client_id: 42
+  max_messages_per_second: 45  # marge sous la limite documentée de 50 msg/s
+  order_type: MKT              # ordres au marché à l'ouverture du rebalancing
+
+backtest:
+  start: "2015-01-01"
+  end: null                    # null = aujourd'hui
+  initial_capital: 100000
+  commission_bps: 5            # 5 points de base par transaction (conservateur)
+  slippage_bps: 5
+  data_source: yfinance        # yfinance pour le backtest ; IBKR en live
+
+validation:
+  # Seuils anti-overfitting (Bailey & López de Prado) — la stratégie ne doit
+  # PAS être connectée au broker si ces seuils ne sont pas atteints.
+  n_trials: 1                  # incrémenter à CHAQUE variante testée (honnêteté!)
+  min_deflated_sharpe_prob: 0.90
+  max_pbo: 0.30
+
+reporting:
+  output_dir: reports
