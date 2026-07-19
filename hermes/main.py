@@ -1,9 +1,12 @@
 """Hermes — point d'entrée.
 
 Modes:
-  python -m hermes.main backtest    # backtest + validation anti-overfitting
-  python -m hermes.main paper       # un cycle de rebalancing en paper trading
-  python -m hermes.main paper --dry-run   # calcule les ordres sans les envoyer
+  python -m hermes.main backtest          # backtest + validation anti-overfitting
+  python -m hermes.main paper [--dry-run] # un cycle de rebalancing paper
+  python -m hermes.main daily [--dry-run] # job quotidien: NAV, stops, breaker
+
+Correction v2 : le coupe-circuit est branché sur l'historique NAV persistant
+(state/nav_history.csv) — plus jamais sur une série à un point (bug v1).
 """
 
 import argparse
@@ -16,9 +19,12 @@ import yaml
 from hermes.backtest.engine import BacktestConfig, run_backtest
 from hermes.backtest.validate import validate_strategy
 from hermes.data.ingestion import fetch_history_yfinance
+from hermes.ops.state import StateStore
 from hermes.reporting.tearsheet import summary_metrics
-from hermes.strategy.momentum import MomentumParams, select_portfolio
-from hermes.strategy.risk import RiskParams, apply_risk_overlay
+from hermes.research.trials import TrialsRegistry, data_hash
+from hermes.strategy.decide import decide_daily, decide_rebalance
+from hermes.strategy.momentum import MomentumParams
+from hermes.strategy.risk import RiskParams
 
 
 def load_settings(path: str = "hermes/config/settings.yaml") -> dict:
@@ -38,12 +44,25 @@ def build_params(cfg: dict) -> tuple[MomentumParams, RiskParams]:
         vol_lookback_days=r["vol_lookback_days"],
         target_annual_vol=r["target_annual_vol"],
         max_position_weight=r["max_position_weight"],
-        kelly_fraction=r["kelly_fraction"],
         trailing_stop_pct=r["trailing_stop_pct"],
         max_drawdown_circuit_breaker=r["max_drawdown_circuit_breaker"],
+        reentry_drawdown=r.get("reentry_drawdown", 0.10),
+        reentry_scale=r.get("reentry_scale", 0.5),
         kill_switch_file=r["kill_switch_file"],
     )
     return momentum, risk
+
+
+def fetch_risk_free(start: str, end: str | None) -> pd.Series | float:
+    """T-Bill 3 mois via ^IRX (annualisé, en %) — QW-1. Fallback honnête: 0."""
+    try:
+        irx = fetch_history_yfinance(["^IRX"], start=start, end=end)
+        if irx.empty:
+            raise ValueError("^IRX vide")
+        return irx.iloc[:, 0] / 100.0
+    except Exception as exc:  # réseau bloqué, ticker indisponible…
+        print(f"⚠️  Taux sans risque indisponible ({exc}) — rf=0, Sharpe optimiste.")
+        return 0.0
 
 
 def cmd_backtest(cfg: dict) -> int:
@@ -54,6 +73,11 @@ def cmd_backtest(cfg: dict) -> int:
         cfg["universe"]["tickers"], start=bt["start"], end=bt.get("end")
     )
     print(f"Données: {prices.shape[0]} jours × {prices.shape[1]} titres")
+    print(
+        "⚠️  Univers = liste ACTUELLE (survivorship bias) tant que le CSV "
+        "point-in-time n'est pas construit (QW-2) — résultat optimiste."
+    )
+    risk_free = fetch_risk_free(bt["start"], bt.get("end"))
 
     result = run_backtest(
         prices,
@@ -71,13 +95,29 @@ def cmd_backtest(cfg: dict) -> int:
     print(json.dumps(metrics, indent=2))
     print(f"Turnover moyen/rebalance: {result.turnover:.2%}")
     print(f"Coûts totaux: {result.total_costs:,.0f}")
+    print(
+        f"Stops déclenchés: {result.n_stop_sales} · breaker: "
+        f"{result.n_breaker_events} · ré-entrées: {result.reentry_events}"
+    )
+
+    # QW-8 : enregistrement mécanique de l'essai AVANT le calcul du verdict —
+    # ce run compte dans n_trials, y compris pour lui-même.
+    registry = TrialsRegistry()
+    strategy_config = {**cfg["strategy"], **cfg["risk"], **{"universe": cfg["universe"]["tickers"]}}
+    registry.record(
+        config=strategy_config,
+        metrics={**metrics, "max_drawdown": result.max_drawdown},
+        data_h=data_hash(prices),
+        hypothese=cfg.get("validation", {}).get("hypothese"),
+    )
 
     v = cfg["validation"]
     verdict = validate_strategy(
         result.returns,
-        n_trials=v["n_trials"],
         min_dsr_prob=v["min_deflated_sharpe_prob"],
         max_pbo=v["max_pbo"],
+        risk_free_annual=risk_free,
+        registry=registry,
     )
     print("\n=== Validation anti-overfitting ===")
     print(json.dumps(verdict, indent=2))
@@ -91,11 +131,9 @@ def cmd_backtest(cfg: dict) -> int:
     return 0
 
 
-def cmd_paper(cfg: dict, dry_run: bool) -> int:
+def _connect(cfg: dict):
     from hermes.execution.ibkr_client import IBKRClient
-    from hermes.execution.order_manager import OrderManager
 
-    momentum, risk = build_params(cfg)
     ex = cfg["execution"]
     client = IBKRClient(
         host=ex["ibkr"]["host"],
@@ -105,25 +143,85 @@ def cmd_paper(cfg: dict, dry_run: bool) -> int:
         max_messages_per_second=ex["max_messages_per_second"],
     )
     client.connect()
-    try:
-        from hermes.data.ingestion import IBKRHistoryFetcher
+    return client
 
+
+def cmd_paper(cfg: dict, dry_run: bool) -> int:
+    """Cycle de rebalancement mensuel en paper trading."""
+    from hermes.data.ingestion import IBKRHistoryFetcher
+    from hermes.execution.order_manager import OrderManager
+
+    momentum, risk = build_params(cfg)
+    store = StateStore()
+    client = _connect(cfg)
+    try:
         fetcher = IBKRHistoryFetcher(client.ib)
         prices = fetcher.fetch_universe(cfg["universe"]["tickers"])
         if prices.empty:
-            print("Aucune donnée reçue d'IBKR — abandon.")
+            print("Aucune donnée reçue d'IBKR — abandon (fail-closed).")
             return 1
 
-        selected = select_portfolio(prices, momentum)
-        target = apply_risk_overlay(prices, selected, risk)
-        print(f"Portefeuille cible:\n{target}")
+        state = store.load_portfolio()
+        nav = client.net_liquidation()
+        nav_history = store.append_nav(prices.index[-1], nav)
+        from dataclasses import replace
+
+        state = replace(state, nav=nav, nav_peak=max(state.nav_peak, nav))
+
+        decision = decide_rebalance(prices, state, momentum, risk)
+        target = pd.Series(decision.target_weights, dtype=float)
+        print(f"Décision: {decision.reason}\nPortefeuille cible:\n{target}")
 
         manager = OrderManager(client, risk)
-        equity_curve = pd.Series([client.net_liquidation()])
         executed = manager.execute(
-            target, prices.iloc[-1], equity_curve, dry_run=dry_run
+            target, prices.iloc[-1], nav_history, dry_run=dry_run
         )
+        if executed or dry_run:
+            store.save_portfolio(decision.state)
         print(f"{len(executed)} ordres {'calculés (dry-run)' if dry_run else 'envoyés'}.")
+        return 0
+    finally:
+        client.disconnect()
+
+
+def cmd_daily(cfg: dict, dry_run: bool) -> int:
+    """Job quotidien léger: NAV, plus-hauts, stops (reduce-only), breaker."""
+    from hermes.data.ingestion import IBKRHistoryFetcher
+    from hermes.execution.order_manager import OrderManager
+
+    _, risk = build_params(cfg)
+    store = StateStore()
+    state = store.load_portfolio()
+    client = _connect(cfg)
+    try:
+        nav = client.net_liquidation()
+        held = list(state.holdings)
+        closes = pd.Series(dtype=float)
+        if held:
+            fetcher = IBKRHistoryFetcher(client.ib)
+            recent = fetcher.fetch_universe(held, duration="5 D")
+            if not recent.empty:
+                closes = recent.iloc[-1]
+
+        today = pd.Timestamp.now().normalize()
+        nav_history = store.append_nav(today, nav)
+
+        decision = decide_daily(closes, nav, state, risk)
+        store.save_portfolio(decision.state)
+
+        if decision.breaker_triggered_today:
+            print("🚨 COUPE-CIRCUIT déclenché — liquidation et blocage des achats.")
+        if decision.stop_sales:
+            print(f"Stops déclenchés (vente seule): {list(decision.stop_sales)}")
+            manager = OrderManager(client, risk)
+            sell_targets = pd.Series(
+                0.0, index=list(decision.stop_sales), dtype=float
+            )
+            manager.execute(sell_targets, closes, nav_history, dry_run=dry_run)
+        print(
+            f"NAV {nav:,.0f} · drawdown {decision.state.drawdown:.1%} · "
+            f"breaker {'ACTIF' if decision.state.breaker_active else 'inactif'}"
+        )
         return 0
     finally:
         client.disconnect()
@@ -131,7 +229,7 @@ def cmd_paper(cfg: dict, dry_run: bool) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(prog="hermes")
-    parser.add_argument("mode", choices=["backtest", "paper"])
+    parser.add_argument("mode", choices=["backtest", "paper", "daily"])
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--config", default="hermes/config/settings.yaml")
     args = parser.parse_args()
@@ -139,6 +237,8 @@ def main() -> int:
     cfg = load_settings(args.config)
     if args.mode == "backtest":
         return cmd_backtest(cfg)
+    if args.mode == "daily":
+        return cmd_daily(cfg, args.dry_run)
     return cmd_paper(cfg, args.dry_run)
 
 

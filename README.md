@@ -2,8 +2,19 @@
 
 Agent de trading momentum basé sur la recherche approfondie du dossier
 [`research/`](research/RAPPORT_BOURSE.md) (9 cycles, ~150 claims académiques
-vérifiées). **Paper trading uniquement** — le passage en argent réel est
-volontairement verrouillé (voir Sécurité).
+vérifiées), le design délibéré [`docs/HERMES_V2_DESIGN.md`](docs/HERMES_V2_DESIGN.md)
+et la roadmap [`docs/HERMES_V2_ROADMAP.md`](docs/HERMES_V2_ROADMAP.md).
+**Paper trading uniquement** — le passage en argent réel est volontairement
+verrouillé (voir Sécurité).
+
+**État v2 (Phase 0 « fondations moteur » implémentée)** : cœur de décision
+unique `decide()` partagé backtest/production (stops, coupe-circuit et
+ré-entrée réellement simulés ET exécutés), NAV persistante branchée sur le
+coupe-circuit, taux sans risque dans le Sharpe/DSR, registre d'essais
+mécanique, ES/CDaR/Ulcer, enveloppe bootstrap avec haircut −58 %, test de
+non-régression sur dataset gelé, fractional shares. Reste à faire (voir
+roadmap) : univers point-in-time (QW-2, CSV à construire sur ta machine),
+couche ops complète, étage IA.
 
 > ⚠️ Projet informatif/expérimental. Rien ici ne constitue un conseil en
 > investissement. Les marchés comportent des risques de perte en capital.
@@ -79,6 +90,12 @@ python -m hermes.main paper --dry-run
 
 ```bash
 python -m hermes.main paper
+```
+
+5bis. Le job quotidien (NAV, trailing stops reduce-only, coupe-circuit) :
+
+```bash
+python -m hermes.main daily            # à mettre en cron quotidien (~30 s)
 ```
 
 6. Automatiser (cron, rebalancing mensuel — ex. 1er jour ouvré à 15h30 UTC) :

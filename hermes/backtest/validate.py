@@ -5,6 +5,13 @@ Base académique (voir research/RAPPORT_BOURSE.md, complément 8bis) :
 - Bailey, Borwein, López de Prado & Zhu, "The Probability of Backtest
   Overfitting", Journal of Computational Finance 20(4) (SSRN 2326253).
 
+Corrections v2 (QW-1 et QW-8, docs/HERMES_V2_ROADMAP.md) :
+- Le Sharpe est un Sharpe d'EXCÈS de rendement (taux sans risque soustrait) —
+  sans quoi l'ère des taux à 5 % gonfle mécaniquement le gate.
+- n_trials peut venir mécaniquement du registre d'essais (TrialsRegistry), et
+  la variance empirique des Sharpes enregistrés remplace l'approximation H0
+  quand elle est disponible.
+
 Règle Hermes : AUCUNE connexion broker tant que ces tests ne passent pas.
 """
 
@@ -17,8 +24,28 @@ from scipy import stats
 EULER_GAMMA = 0.5772156649015329
 
 
-def sharpe_ratio(returns: pd.Series, periods_per_year: int = 252) -> float:
+def excess_returns(
+    returns: pd.Series, risk_free_annual: float | pd.Series = 0.0,
+    periods_per_year: int = 252,
+) -> pd.Series:
+    """Rendements en excès du taux sans risque.
+
+    risk_free_annual : taux annualisé — scalaire (ex. 0.045) ou Series alignée
+    sur l'index (taux annualisé variable, ex. ^IRX/100), converti par période.
+    """
     r = returns.dropna()
+    if isinstance(risk_free_annual, pd.Series):
+        rf = risk_free_annual.reindex(r.index).ffill().fillna(0.0)
+        return r - rf / periods_per_year
+    return r - float(risk_free_annual) / periods_per_year
+
+
+def sharpe_ratio(
+    returns: pd.Series,
+    periods_per_year: int = 252,
+    risk_free_annual: float | pd.Series = 0.0,
+) -> float:
+    r = excess_returns(returns, risk_free_annual, periods_per_year)
     if len(r) < 2 or r.std() == 0:
         return 0.0
     return float(r.mean() / r.std() * np.sqrt(periods_per_year))
@@ -39,14 +66,16 @@ def deflated_sharpe_ratio(
     n_trials: int,
     var_sharpe_across_trials: float | None = None,
     periods_per_year: int = 252,
+    risk_free_annual: float | pd.Series = 0.0,
 ) -> float:
     """Probabilité que le Sharpe observé soit réel (pas un artefact de sélection).
 
     Retourne P(SR_vrai > SR0) où SR0 est le Sharpe max attendu sous pur bruit
-    après n_trials essais. Interprétation: > 0.95 = très solide, < 0.5 = probable
-    faux positif.
+    après n_trials essais. var_sharpe_across_trials : variance EMPIRIQUE des
+    Sharpes des essais du registre si disponible (Bailey & López de Prado),
+    sinon approximation sous H0.
     """
-    r = returns.dropna()
+    r = excess_returns(returns, risk_free_annual, periods_per_year)
     t = len(r)
     if t < 10:
         return 0.0
@@ -55,11 +84,15 @@ def deflated_sharpe_ratio(
     kurt = float(stats.kurtosis(r, fisher=False))
 
     if var_sharpe_across_trials is None:
-        # Approximation de la variance du Sharpe estimé sous H0 (par période)
         var_sharpe_across_trials = (1.0 / t) * (
             1 - skew * sr_period + (kurt - 1) / 4 * sr_period**2
         )
         var_sharpe_across_trials = max(var_sharpe_across_trials, 1e-12)
+    else:
+        # La variance du registre est annualisée : ramener à l'échelle période.
+        var_sharpe_across_trials = max(
+            var_sharpe_across_trials / periods_per_year, 1e-12
+        )
 
     sr0 = expected_max_sharpe(n_trials, var_sharpe_across_trials)
     denom = np.sqrt(
@@ -75,10 +108,8 @@ def probability_of_backtest_overfitting(
     """PBO via CSCV (validation croisée symétrique combinatoire).
 
     trial_returns: DataFrame (index=date, colonnes=un essai/configuration).
-    Découpe le temps en n_splits blocs; pour chaque combinaison de blocs
-    formant l'in-sample, sélectionne la meilleure config in-sample et mesure
-    son rang out-of-sample. PBO = proportion de combinaisons où la config
-    choisie est sous-médiane hors échantillon.
+    PBO = proportion de combinaisons de blocs où la config choisie in-sample
+    est sous-médiane hors échantillon.
     """
     if trial_returns.shape[1] < 2:
         return 0.0
@@ -109,18 +140,39 @@ def probability_of_backtest_overfitting(
 
 def validate_strategy(
     returns: pd.Series,
-    n_trials: int,
+    n_trials: int | None = None,
     min_dsr_prob: float = 0.90,
     trial_returns: pd.DataFrame | None = None,
     max_pbo: float = 0.30,
+    risk_free_annual: float | pd.Series = 0.0,
+    registry=None,
 ) -> dict:
-    """Verdict global — la stratégie peut-elle passer en paper trading ?"""
-    dsr = deflated_sharpe_ratio(returns, n_trials)
+    """Verdict global — la stratégie peut-elle passer en paper trading ?
+
+    registry : TrialsRegistry optionnel. S'il est fourni, n_trials vient du
+    registre (mécanique) et la variance empirique des Sharpes enregistrés est
+    injectée au DSR. n_trials manuel n'est accepté qu'en son absence.
+    """
+    var_empirical = None
+    if registry is not None:
+        n_trials = registry.n_trials()
+        var_empirical = registry.sharpe_variance()
+    elif n_trials is None:
+        raise ValueError("Fournir soit registry, soit n_trials explicite")
+
+    dsr = deflated_sharpe_ratio(
+        returns,
+        n_trials,
+        var_sharpe_across_trials=var_empirical,
+        risk_free_annual=risk_free_annual,
+    )
     result = {
-        "sharpe": sharpe_ratio(returns),
+        "sharpe": sharpe_ratio(returns, risk_free_annual=risk_free_annual),
         "deflated_sharpe_prob": dsr,
         "dsr_pass": dsr >= min_dsr_prob,
         "n_trials_declared": n_trials,
+        "n_trials_source": "registry" if registry is not None else "manual",
+        "sharpe_variance_source": "empirical" if var_empirical is not None else "h0",
     }
     if trial_returns is not None and trial_returns.shape[1] >= 2:
         pbo = probability_of_backtest_overfitting(trial_returns)

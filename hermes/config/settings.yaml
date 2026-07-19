@@ -34,22 +34,27 @@ strategy:
   # exclu à cause du short-term reversal documenté.
   lookback_months: 12
   skip_months: 1
-  top_n: 5                    # nombre de titres détenus (long only au départ)
+  top_n: 10                   # v2: top 10 diversifié (un top-5 à cap 30% est un
+                              # pari idiosyncratique — critique unanime du design v2)
   rebalance: monthly          # monthly | weekly
   # Filtre time-series (Moskowitz-Ooi-Pedersen) : ne détenir un titre que si
   # son propre rendement 12-1 est positif (sinon cash sur cette poche).
   tsmom_filter: true
 
 risk:
-  # Vol-scaling conservateur : pondération inverse-volatilité (pas de
-  # vol-timing agressif — gains contestés hors-échantillon, cf. rapport §7).
+  # Sizing conservateur = inverse-vol + vol-target 15% + zéro levier + caps.
+  # (Aucun Kelly n'est estimé — le pseudo demi-Kelly v1 était un no-op, retiré.)
   vol_lookback_days: 60
-  target_annual_vol: 0.15     # cible de volatilité portefeuille
-  max_position_weight: 0.30   # aucune position > 30% du portefeuille
-  kelly_fraction: 0.5         # demi-Kelly appliqué au levier global (jamais >1)
+  target_annual_vol: 0.15     # cible de volatilité (continu, Barroso & Santa-Clara)
+  max_position_weight: 0.15   # v2: aucune position > 15% du portefeuille
   trailing_stop_pct: 0.15     # trailing stop large (les stops serrés détruisent
                               # de la valeur sur actions individuelles, Lo & Remorov 2017)
-  max_drawdown_circuit_breaker: 0.15  # coupe-circuit : trading désactivé au-delà
+  max_drawdown_circuit_breaker: 0.15  # coupe-circuit : plus d'achats au-delà
+  # Ré-entrée pré-enregistrée (design v2 §5) : reprise au premier rebalancement
+  # où le drawdown est repassé sous reentry_drawdown, à reentry_scale de
+  # l'exposition le premier mois, puis 100%.
+  reentry_drawdown: 0.10
+  reentry_scale: 0.5
   kill_switch_file: KILL_SWITCH        # si ce fichier existe à la racine → aucun ordre
 
 execution:

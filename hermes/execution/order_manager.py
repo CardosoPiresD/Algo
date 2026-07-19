@@ -40,6 +40,13 @@ class OrderManager:
             return False, "coupe-circuit de drawdown déclenché"
         return True, "ok"
 
+    # Quantités fractionnaires (IBKR fractional shares) : rend les poids
+    # cibles atteignables sur petit capital et supprime l'artefact d'arrondi
+    # int() qui polluait la réconciliation (design v2 §2.2). Les deltas dont la
+    # valeur est inférieure à MIN_ORDER_VALUE sont ignorés (anti-poussière).
+    MIN_ORDER_VALUE = 50.0
+    QTY_DECIMALS = 4
+
     def compute_orders(
         self,
         target_weights: pd.Series,
@@ -54,18 +61,22 @@ class OrderManager:
             price = float(prices.get(symbol, 0))
             if price <= 0:
                 continue
-            target_qty = int(equity * float(target_weights.get(symbol, 0.0)) / price)
-            current_qty = int(current_positions.get(symbol, 0))
-            delta = target_qty - current_qty
-            if delta != 0:
-                orders.append(
-                    {
-                        "symbol": symbol,
-                        "action": "BUY" if delta > 0 else "SELL",
-                        "quantity": abs(delta),
-                        "target_weight": float(target_weights.get(symbol, 0.0)),
-                    }
-                )
+            target_qty = round(
+                equity * float(target_weights.get(symbol, 0.0)) / price,
+                self.QTY_DECIMALS,
+            )
+            current_qty = float(current_positions.get(symbol, 0))
+            delta = round(target_qty - current_qty, self.QTY_DECIMALS)
+            if abs(delta) * price < self.MIN_ORDER_VALUE:
+                continue
+            orders.append(
+                {
+                    "symbol": symbol,
+                    "action": "BUY" if delta > 0 else "SELL",
+                    "quantity": abs(delta),
+                    "target_weight": float(target_weights.get(symbol, 0.0)),
+                }
+            )
         return orders
 
     def execute(

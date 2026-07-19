@@ -32,16 +32,22 @@ def test_inverse_vol_overweights_low_vol():
 def test_max_position_weight_cap():
     prices = make_prices()
     selected = pd.Series(0.5, index=["LOWVOL", "HIGHVOL"])
-    params = RiskParams(max_position_weight=0.30)
+    params = RiskParams(max_position_weight=0.15)
     weights = apply_risk_overlay(prices, selected, params)
-    assert (weights <= 0.30 + 1e-9).all()
+    assert (weights <= 0.15 + 1e-9).all()
 
 
 def test_vol_scalar_never_levers_up():
     prices = make_prices(vols={"A": 0.001, "B": 0.001})
     weights = pd.Series(0.5, index=["A", "B"])
-    scalar = portfolio_vol_scalar(prices, weights, RiskParams(kelly_fraction=0.5))
+    scalar = portfolio_vol_scalar(prices, weights, RiskParams())
     assert scalar <= 1.0 + 1e-9
+
+
+def test_no_kelly_pretense():
+    """v2: le pseudo demi-Kelly (no-op ×0.5×2) a été retiré — RiskParams ne
+    doit plus exposer de kelly_fraction."""
+    assert not hasattr(RiskParams(), "kelly_fraction")
 
 
 def test_empty_selection_passthrough():
