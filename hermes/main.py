@@ -169,6 +169,76 @@ def fetch_mechanical_flags(cfg: dict, tickers: list[str]):
         return FlagsReport(status={t: "erreur" for t in tickers})
 
 
+def run_ai_observation(cfg: dict, tickers: list[str]) -> None:
+    """Couche IA en observation stricte — n'a AUCUN effet sur le trading.
+
+    Fail-open total : clé absente, budget épuisé, réseau ou parse en erreur =>
+    on enregistre l'état et on continue. Aucun retour n'influence les ordres.
+    """
+    ai_cfg = cfg.get("ai", {})
+    if not ai_cfg.get("enabled", False):
+        return
+    try:
+        from hermes.ai.budget_guard import BudgetGuard
+        from hermes.ai.client import LLMClient, MeteredClient
+        from hermes.intel.company_analysis import analyze_company, save_assessments
+        from hermes.intel.edgar_client import EdgarClient
+        from hermes.intel.edgar_filings import FilingReader
+        from hermes.intel.sentinel_ai import assess_going_concern
+
+        base_client = LLMClient(
+            model=ai_cfg["model"],
+            base_url=ai_cfg["base_url"],
+            api_key_env=ai_cfg["api_key_env"],
+        )
+        if not base_client.available:
+            print("ℹ️  Couche IA inactive (clé absente) — quant pur, aucun impact.")
+            return
+
+        month = pd.Timestamp.now().strftime("%Y-%m")
+        budget = BudgetGuard(
+            monthly_cap_eur=ai_cfg["budget_cap_eur"],
+            price_in_per_mtok=ai_cfg["price_in_per_mtok"],
+            price_out_per_mtok=ai_cfg["price_out_per_mtok"],
+        )
+        if not budget.can_spend(month):
+            print(f"ℹ️  Budget IA du mois épuisé ({budget.spent(month):.2f} €) — quant pur.")
+            return
+        client = MeteredClient(base_client, budget, month)
+
+        edgar = EdgarClient(user_agent=cfg["intel"]["edgar_user_agent"])
+        reader = FilingReader(edgar)
+        cik_map = edgar.ticker_to_cik()
+        assessments = []
+        limit = ai_cfg.get("max_companies_per_cycle", 12)
+
+        for ticker in tickers[:limit]:
+            if not client.available:
+                break
+            cik = cik_map.get(ticker.upper())
+            if cik is None:
+                continue
+            filing = reader.latest_filing_text(cik)
+            text = filing["text"] if filing else None
+
+            if ai_cfg.get("run_sentinel", True):
+                v = assess_going_concern(ticker, text, client)
+                if v.is_valid_grave:
+                    print(
+                        f"👁️  [SHADOW] Sentinelle IA: {ticker} classé GRAVE "
+                        f"({v.categorie}) — enregistré, AUCUNE action."
+                    )
+            if ai_cfg.get("run_company_analysis", True):
+                assessments.append(analyze_company(ticker, text, client))
+
+        if assessments:
+            path = save_assessments(assessments, month)
+            print(f"👁️  [OBSERVATION] Analyses d'entreprise enregistrées: {path}")
+        print(f"ℹ️  Dépense IA cumulée ce mois: {budget.spent(month):.3f} €")
+    except Exception as exc:
+        print(f"⚠️  Couche IA indisponible ({exc}) — sans effet, quant pur (fail-open).")
+
+
 def cmd_paper(cfg: dict, dry_run: bool) -> int:
     """Cycle de rebalancement mensuel en paper trading."""
     from hermes.data.ingestion import IBKRHistoryFetcher
@@ -204,6 +274,11 @@ def cmd_paper(cfg: dict, dry_run: bool) -> int:
         )
         journal_path = save_decision_journal(journal)
         print(f"Journal de décision: {journal_path}")
+
+        # Couche IA — OBSERVATION STRICTE : lit les dépôts SEC des titres cibles,
+        # produit sentinelle + analyse d'entreprise, ENREGISTRE, n'affecte NI la
+        # décision NI les ordres. Budget-gardée, fail-open.
+        run_ai_observation(cfg, list(target.index) or list(state.holdings))
 
         manager = OrderManager(client, risk)
         executed = manager.execute(

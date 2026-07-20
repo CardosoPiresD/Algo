@@ -87,5 +87,27 @@ intel:
   edgar_user_agent: "HermesBot dylan.cardoso.pires@gmail.com"
   flags_enabled: true
 
+ai:
+  # Couche IA — ANALYSE uniquement, aucun accès aux ordres (design v2 §3).
+  # Désactivée tant que la clé OPENROUTER_API_KEY n'est pas dans l'environnement.
+  enabled: true
+  provider: openrouter
+  base_url: "https://openrouter.ai/api/v1/chat/completions"
+  api_key_env: OPENROUTER_API_KEY
+  # Modèle via OpenRouter — slug DeepSeek à confirmer au moment du branchement.
+  model: "deepseek/deepseek-chat"
+  # MODE OBSERVATION strict : les verdicts IA sont enregistrés, JAMAIS appliqués.
+  # Passer un item à false n'active PAS l'action — la promotion (veto réel) est
+  # une décision humaine séparée après revue de qualité (design §3.1).
+  shadow_only: true
+  run_sentinel: true          # second avis going-concern (shadow)
+  run_company_analysis: true  # concurrence/innovation/management (observation)
+  # Garde-fous budget (design §3.4) — plafond DUR, tarifs configurables (DeepSeek
+  # est très bon marché ; doubler ce plafond côté console OpenRouter).
+  budget_cap_eur: 3.0
+  price_in_per_mtok: 0.30
+  price_out_per_mtok: 0.90
+  max_companies_per_cycle: 12  # borne le coût: n'analyse pas 500 titres
+
 reporting:
   output_dir: reports

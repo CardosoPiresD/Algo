@@ -7,14 +7,22 @@ et la roadmap [`docs/HERMES_V2_ROADMAP.md`](docs/HERMES_V2_ROADMAP.md).
 **Paper trading uniquement** — le passage en argent réel est volontairement
 verrouillé (voir Sécurité).
 
-**État v2 (Phase 0 « fondations moteur » implémentée)** : cœur de décision
-unique `decide()` partagé backtest/production (stops, coupe-circuit et
-ré-entrée réellement simulés ET exécutés), NAV persistante branchée sur le
-coupe-circuit, taux sans risque dans le Sharpe/DSR, registre d'essais
-mécanique, ES/CDaR/Ulcer, enveloppe bootstrap avec haircut −58 %, test de
-non-régression sur dataset gelé, fractional shares. Reste à faire (voir
-roadmap) : univers point-in-time (QW-2, CSV à construire sur ta machine),
-couche ops complète, étage IA.
+**État v2** : cœur de décision unique `decide()` partagé backtest/production
+(stops, coupe-circuit et ré-entrée réellement simulés ET exécutés) ; gate
+statistique honnête (Sharpe en excès du taux sans risque, registre d'essais
+mécanique, grille de plateau + PBO, permutation, sensibilité, chemins OOS,
+CUSUM de mort du signal) ; enveloppe bootstrap avec haircut −58 % ;
+non-régression figée ; flags 8-K EDGAR mécaniques + journal de décision.
+
+**Couche IA (analyse uniquement, jamais d'ordre)** — OpenRouter/DeepSeek,
+**mode observation strict** : lit les dépôts SEC, produit une sentinelle
+going-concern (veto-only, citation vérifiée mot à mot) et une analyse
+d'entreprise qualitative (moat/innovation/management/concurrence) — le tout
+**enregistré, jamais appliqué**, budget-gardé, fail-open (sans clé : quant pur).
+Configurer : mettre `OPENROUTER_API_KEY` dans `.env` (jamais committé).
+
+Reste à faire (dépend de ta machine) : univers point-in-time (CSV à
+construire), déploiement IB Gateway, couche ops (supervisor/Telegram).
 
 > ⚠️ Projet informatif/expérimental. Rien ici ne constitue un conseil en
 > investissement. Les marchés comportent des risques de perte en capital.
