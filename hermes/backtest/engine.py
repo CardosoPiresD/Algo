@@ -67,10 +67,19 @@ def run_backtest(
     momentum_params: MomentumParams,
     risk_params: RiskParams,
     config: BacktestConfig,
+    schedule_dates=None,
+    selector=None,
 ) -> BacktestResult:
+    """schedule_dates/selector : hooks du banc de validation (QW-10) — un
+    calendrier explicite pour les tests de sensibilité, un sélecteur alternatif
+    pour la permutation. Défauts = comportement de production, à l'identique.
+    """
     prices = prices.sort_index().dropna(how="all")
     daily_returns = prices.pct_change().fillna(0.0)
-    schedule = set(rebalance_schedule(prices.index, config.rebalance))
+    if schedule_dates is None:
+        schedule = set(rebalance_schedule(prices.index, config.rebalance))
+    else:
+        schedule = set(pd.DatetimeIndex(schedule_dates))
     cost_rate = (config.commission_bps + config.slippage_bps) / 10_000.0
     warmup = momentum_params.lookback_months * 21 + 1
 
@@ -112,7 +121,7 @@ def run_backtest(
             window = prices.loc[:date]
             pre_holdings = dict(state.holdings)
             decision = decide_rebalance(
-                window, state, momentum_params, risk_params
+                window, state, momentum_params, risk_params, selector=selector
             )
             state = decision.state
             if decision.reason == "reentry_50":

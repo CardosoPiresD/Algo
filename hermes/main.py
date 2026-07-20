@@ -146,10 +146,34 @@ def _connect(cfg: dict):
     return client
 
 
+def fetch_mechanical_flags(cfg: dict, tickers: list[str]):
+    """Flags 8-K mécaniques — fail-open : erreur => aucun flag, état journalisé."""
+    from hermes.intel.mechanical_flags import FlagsReport, scan_8k_flags
+
+    intel_cfg = cfg.get("intel", {})
+    if not intel_cfg.get("flags_enabled", False):
+        return FlagsReport()
+    try:
+        from hermes.intel.edgar_client import EdgarClient
+
+        client = EdgarClient(user_agent=intel_cfg["edgar_user_agent"])
+        report = scan_8k_flags(tickers, client)
+        errors = [t for t, s in report.status.items() if s == "erreur"]
+        if errors:
+            print(f"⚠️  EDGAR en erreur pour {errors} — flags partiels (fail-open).")
+        if report.vetoed:
+            print(f"⛔ Vetos mécaniques 8-K (1.03/4.02): {sorted(report.vetoed)}")
+        return report
+    except Exception as exc:
+        print(f"⚠️  Couche flags indisponible ({exc}) — cycle quant pur (fail-open).")
+        return FlagsReport(status={t: "erreur" for t in tickers})
+
+
 def cmd_paper(cfg: dict, dry_run: bool) -> int:
     """Cycle de rebalancement mensuel en paper trading."""
     from hermes.data.ingestion import IBKRHistoryFetcher
     from hermes.execution.order_manager import OrderManager
+    from hermes.ops.decision_journal import build_decision_journal, save_decision_journal
 
     momentum, risk = build_params(cfg)
     store = StateStore()
@@ -168,9 +192,18 @@ def cmd_paper(cfg: dict, dry_run: bool) -> int:
 
         state = replace(state, nav=nav, nav_peak=max(state.nav_peak, nav))
 
-        decision = decide_rebalance(prices, state, momentum, risk)
+        flags = fetch_mechanical_flags(cfg, list(prices.columns))
+        decision = decide_rebalance(
+            prices, state, momentum, risk, vetoed=flags.vetoed
+        )
         target = pd.Series(decision.target_weights, dtype=float)
         print(f"Décision: {decision.reason}\nPortefeuille cible:\n{target}")
+
+        journal = build_decision_journal(
+            prices, state, decision, momentum, risk, vetoed=flags.vetoed
+        )
+        journal_path = save_decision_journal(journal)
+        print(f"Journal de décision: {journal_path}")
 
         manager = OrderManager(client, risk)
         executed = manager.execute(
@@ -208,6 +241,20 @@ def cmd_daily(cfg: dict, dry_run: bool) -> int:
 
         decision = decide_daily(closes, nav, state, risk)
         store.save_portfolio(decision.state)
+
+        # QW-4 : surveillance intra-mois des 8-K des positions détenues
+        # (mécanique, zéro IA sur le chemin critique, aucune vente auto).
+        if held:
+            from hermes.intel.mechanical_flags import alert_level
+
+            flags = fetch_mechanical_flags(cfg, held)
+            alerts = alert_level(flags, held)
+            for ticker, level in alerts.items():
+                print(
+                    f"{'🚨' if level == 'CRITICAL' else '⚠️ '} {level} 8-K sur "
+                    f"position détenue {ticker} — revue humaine requise "
+                    "(aucune vente automatique)."
+                )
 
         if decision.breaker_triggered_today:
             print("🚨 COUPE-CIRCUIT déclenché — liquidation et blocage des achats.")

@@ -81,5 +81,11 @@ validation:
   min_deflated_sharpe_prob: 0.90
   max_pbo: 0.30
 
+intel:
+  # Flags mécaniques 8-K (étage 0 sentinelle, zéro IA) — design v2 §3.1.
+  # La SEC exige un User-Agent identifiant (nom + email) sous peine de 403.
+  edgar_user_agent: "HermesBot dylan.cardoso.pires@gmail.com"
+  flags_enabled: true
+
 reporting:
   output_dir: reports

@@ -126,6 +126,7 @@ def decide_rebalance(
     momentum: MomentumParams,
     risk: RiskParams,
     vetoed: frozenset = frozenset(),
+    selector=None,
 ) -> RebalanceDecision:
     """Décision de rebalancement mensuel.
 
@@ -134,6 +135,10 @@ def decide_rebalance(
     vetoed : tickers exclus par les flags mécaniques 8-K (et, plus tard, par la
     sentinelle IA promue). Le poids d'un titre veto va au cash — jamais de
     remplacement par le rang n+1 (design v2 §3.1).
+    selector : hook de sélection alternatif (callable(prices_window, momentum)
+    -> Series de poids), utilisé UNIQUEMENT par le banc de validation (test de
+    permutation QW-10b) pour éviter une seconde implémentation du pipeline.
+    Défaut : la sélection momentum réelle.
     """
     if state.breaker_active:
         if state.drawdown >= risk.reentry_drawdown:
@@ -153,7 +158,8 @@ def decide_rebalance(
         scale = 1.0
         reason = "normal"
 
-    selected = select_portfolio(prices_window, momentum)
+    select = selector if selector is not None else select_portfolio
+    selected = select(prices_window, momentum)
     if not selected.empty and vetoed:
         kept = [t for t in selected.index if t not in vetoed]
         selected = selected.loc[kept]  # le poids des vetos part au cash
